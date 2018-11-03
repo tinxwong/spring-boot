@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>表格使用弹出框编辑</title>
+    <!-- 此文件为了显示Demo样式，项目中不需要引入 -->
+    <link href="/assets/code/demo.css" rel="stylesheet">
+
+    <link href="/assets/css/dpl.css" rel="stylesheet">
+    <link href="/assets/css/bui.css" rel="stylesheet">
+    <style>
+        .bui-select .bui-select-input{
+            width: 400px;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+    </style>
+</head>
+<body>
+<form class="form-inline definewidth m20" action="index.html" method="get" style="margin-left:20px;margin-top:20px;">
+    关键词：
+    <input type="text" name="rolename" id="rolename"class="abc input-default" placeholder="" value="">&nbsp;&nbsp;
+    <button type="submit" class="button button-primary">查询</button>&nbsp;&nbsp; <button type="button" class="button button-success" id="addnew">添加下注网站</button>&nbsp;&nbsp;<button class="button button-danger">删除</button>
+</form>
+<div class="demo-content" style="margin-top:20px;margin-left:20px;">
+    <div class="row">
+        <div class="span16" style="width:98%;">
+            <div id="grid">
+
+            </div>
+        </div>
+    </div>
+    <!-- 初始隐藏 dialog内容 -->
+    <div id="content" class="hide">
+        <form class="form-horizontal" id="lotteryForm">
+            <div class="row">
+                <div class="control-group span10">
+                    <label class="control-label"><s>*</s>ID：</label>
+                    <div class="controls">
+                        <input id="lotteryid" name="id" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                    </div>
+                </div>
+                <div class="control-group span10">
+                    <label class="control-label"><s>*</s>网站名称：</label>
+                    <div class="controls">
+                        <input id="name" name="name" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                    </div>
+                </div>
+                <div class="control-group span10">
+                    <label class="control-label"><s>*</s>网站介绍 ：</label>
+                    <div class="controls">
+                        <input id="intro" name="intro" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                    </div>
+                </div>
+                <div class="control-group span10">
+                    <label class="control-label"><s>*</s>登录链接：</label>
+                    <div class="controls">
+                        <input id="loginUrl" name="loginUrl" type="text" data-rules="{required:true}" class="input-normal control-text">
+                    </div>
+                </div>
+               <!-- <div class="control-group span10">
+                    <label class="control-label"><s>*</s>下注链接：</label>
+                    <div class="controls">
+                        <input id="chipInUrl" name="chipInUrl" type="text" data-rules="{required:true}" class="input-normal control-text">
+                    </div>
+                </div>-->
+                <div class="control-group span10">
+                    <label class="control-label"><s>*</s>期数链接：</label>
+                    <div class="controls">
+                        <input id="periodsUrl" name="periodsUrl" type="text" data-rules="{required:true}" class="input-normal control-text">
+                    </div>
+                </div>
+                <div class="control-group span10">
+                    <label class="control-label"><s>*</s>账户链接：</label>
+                    <div class="controls">
+                        <input id="accountUrl" name="accountUrl" type="text" data-rules="{required:true}" class="input-normal control-text">
+                    </div>
+                </div>
+                <div class="control-group span10">
+                    <label class="control-label"><s>*</s>同意链接：</label>
+                    <div class="controls">
+                        <input id="agreementUrl" name="agreementUrl" type="text" data-rules="{required:true}" class="input-normal control-text">
+                    </div>
+                </div>
+                <div class="control-group span10">
+                    <label class="control-label"><s>*</s>当前期数状态链接：</label>
+                    <div class="controls">
+                        <input id="currentPeriodStatusUrl" name="currentPeriodStatusUrl" type="text" data-rules="{required:true}" class="input-normal control-text">
+                    </div>
+                </div>
+                <div class="control-group span10">
+                    <label class="control-label"><s>*</s>开奖号码链接：</label>
+                    <div class="controls">
+                        <input id="drawNoUrl" name="drawNoUrl" type="text" data-rules="{required:true}" class="input-normal control-text">
+                    </div>
+                </div>
+                <div class="control-group span10">
+                    <label class="control-label"><s>*</s>上传文件链接：</label>
+                    <div class="controls">
+                        <input id="uploadBetNosUrl" name="uploadBetNosUrl" type="text" data-rules="{required:true}" class="input-normal control-text">
+                    </div>
+                </div>
+                <div class="control-group span10">
+                    <label class="control-label"><s>*</s>根链接：</label>
+                    <div class="controls">
+                        <input id="rootUrl" name="rootUrl" type="text" data-rules="{required:true}" class="input-normal control-text">
+                    </div>
+                </div>
+                <div class="control-group span10">
+                    <label class="control-label"><s>*</s>认证类名称：</label>
+                    <div class="controls">
+                        <select id="authentClassName" name="authentClassName">
+
+                        </select>
+                       <!--<input id="authentClassName" name="authentClassName" type="text" data-rules="{required:true}" class="input-normal control-text">-->
+                    </div>
+                </div>
+                <div class="control-group span10">
+                    <label class="control-label"><s>*</s>批量下注链接：</label>
+                    <div class="controls">
+                        <input id="batchBetUrl" name="batchBetUrl" type="text" data-rules="{required:true}" class="input-normal control-text">
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+
+    <script src="/assets/js/jquery-1.8.1.min.js"></script>
+    <script src="/assets/js/bui-min.js"></script>
+    <!-- script start -->
+    <script type="text/javascript">
+        BUI.use(['bui/grid','bui/data','common/search','bui/select'],function(Grid,Data,Search,Select){
+            var Grid = Grid,
+                Store = Data.Store,
+                columns = [
+                    {title : 'ID',dataIndex :'id', width:50},
+                    {title : '网站名称',dataIndex :'name', width:100},
+                    {title : '网站介绍',dataIndex :'intro', width:100},
+                    {title : '登录链接',dataIndex :'loginUrl', width:100},
+                    {title : '期数链接',dataIndex : 'periodsUrl',width:100},
+                    {title : '账户链接',dataIndex : 'accountUrl',width:100},
+                    {title : '同意链接',dataIndex : 'agreementUrl',width:100},
+                    {title : '当前期数状态链接',dataIndex : 'currentPeriodStatusUrl',width:100},
+                    {title : '开奖号码链接',dataIndex : 'drawNoTableUrl',width:100},
+                    {title : '上传文件链接',dataIndex : 'uploadBetNosUrl',width:100},
+                    {title : '根链接',dataIndex : 'rootUrl',width:100},
+                    {title : '认证类名称',dataIndex : 'authentClassName',width:100},
+                    {title : '批量下注链接',dataIndex : 'batchBetUrl',width:100},
+                    {title : '创建人',dataIndex : 'createUser',width:100},
+                    {title : '创建时间',dataIndex : 'createTimeString',width:100},
+                    {title : '修改人',dataIndex : 'updateUser',width:100},
+                    {title : '修改时间',dataIndex : 'updateTimeString',width:100},
+                    {title : '操作',renderer : function(){
+                        return '<span class="grid-command btn-edit">编辑</span>&nbsp;<span class="grid-command btn-delete">删除</span>'
+                    }}
+                ];
+
+
+            var editing = new Grid.Plugins.DialogEditing({
+                contentId : 'content', //设置隐藏的Dialog内容
+                triggerCls : 'btn-edit', //触发显示Dialog的样式
+                editor : {
+                    title : '权限对象-编辑',
+                    width : '80%',
+                    success:function(){
+                        var edtor = this;
+                        edtor.accept();
+                        $.ajax({
+                            type: "POST",
+                            url: "./editById",
+                            data:$("#lotteryForm").serialize(),
+                            dataType: "json",
+                            success: function(data){
+                                if(data.code=="SUCCESS"){
+                                    edtor.accept();
+                                    search.load();
+                                }
+                            }
+                        });
+                    }
+
+                },
+                autoSave : true //自动添加和更新
+            });
+
+            var store = new Store({
+                url : './listByPage',
+                autoLoad:true, //自动加载数据
+                params : { //配置初始请求的参数
+//                        a : 'a1',
+//                        b : 'b1'
+                },
+                pageSize:4	// 配置分页数目
+            });
+            var gridCfg = Search.createGridCfg(columns,{plugins:[editing,Grid.Plugins.CheckSelection]});
+            var search = new Search({
+                store: store,
+                gridCfg: gridCfg
+            });
+
+//            grid.render();
+
+
+            grid = search.get('grid');
+
+            //监听表格行内操作列的点击操作
+            grid.on('itemclick',function(ev){
+                var sender = $(ev.domTarget),
+                    itemEl = $(ev.element),
+                    item = ev.item;
+
+                if(sender.hasClass('btn-delete')){ //点击删除操作
+                    del(item);
+
+                }else if(sender.hasClass('btn-edit')){ //点击编辑操作
+                }
+
+            });
+
+            //删除选中的记录
+            function del(item){
+                BUI.Message.Confirm('确认删除ID['+item.id+']记录？',function(){
+//                    var input = itemEl.find('input'),
+//                        name = itemEl.attr('name');
+//                    if(name){
+//                        form.getField(name).remove();
+//                    }
+                    $.ajax({
+                        type: "POST",
+                        url: "./del",
+                        data: {id:item.id},
+                        dataType: "json",
+                        success: function(data){
+                            if(data.code=="SUCCESS"){
+                                store.remove(item);
+                                search.load();
+                            }
+                        }
+                    });
+                },'question');
+            }
+
+            //监听批量删除按钮
+            $(".button-danger").on('click',function(){
+                var ids = "";
+                var selections = grid.getSelection();
+                if(selections.length==0){
+                    return false;
+                }
+                for(var i = 0; i< selections.length;i++){
+                    if(i<selections.length-1){
+                        ids+=selections[i].id+",";
+                    }else{
+                        ids+=selections[i].id;
+                    }
+                }
+                BUI.Message.Confirm('确认批量删除['+ids+']记录？',function(){
+                    $.ajax({
+                        type: "POST",
+                        url: "./batchDel",
+                        data: {ids:ids},
+                        dataType: "json",
+                        success: function(data){
+                            if(data.code=="SUCCESS"){
+                                store.remove(selections);
+                                search.load();
+                            }
+                        }
+                    });
+                });
+                return false;
+            });
+
+
+            $('#addnew').click(function(){
+
+                window.location.href="./add";
+            });
+        });
+
+        $(document).ready(function(){
+            $.ajax({
+                type: "GET",
+                url: "../getAuthent",
+                dataType: "json",
+                success: function(data){
+
+                    if(data.code=="SUCCESS"){
+                        var options = data.data;
+                        for(var i = 0; i < options.length;i++){
+                            var val = options[i];
+                            $("#authentClassName").append("<option value='"+val+"'>"+val+"</option>");
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+    <!-- script end -->
+</div>
+</body>
+</html>

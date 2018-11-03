@@ -1,0 +1,40 @@
+.bui-select-list{
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    background-clip: padding-box;
+}
+.bui-select .bui-select-input{
+    border-right: none;
+    vertical-align: middle;
+    outline: none;
+    _height: 22px;
+    _padding: 1px 4px;
+    width: 300px;
+}
+
+.bui-select-list ul{
+    margin: 10px 0;
+}
+.x-checkbox, .x-radio{
+    width: 13px;
+    height: 20px;
+    vertical-align: top;
+    margin-right: 5px;
+    display: inline-block;
+}
+
+.x-checkbox{
+    background: url('/Img/check_icon-100-100.gif') no-repeat 0px 0px transparent;
+}
+
+
+.bui-select-list .bui-list-item{
+    display: block;
+    padding: 3px 20px;
+    color: #333333;
+    white-space: nowrap;
+}

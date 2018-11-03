@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link href="/assets/css/dpl.css" rel="stylesheet">
+    <link href="/assets/css/bui.css" rel="stylesheet">
+    <script src="/assets/js/jquery-1.8.1.min.js"></script>
+    <script src="/assets/js/bui-min.js"></script>
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+
+
+    </style>
+</head>
+<form method="post" id="lotteryForm">
+<table class="table table-bordered table-hover definewidth m10">
+    <tr>
+        <td width="10%" class="tableleft">网站名称</td>
+        <td><input type="text" name="name"/></td>
+    </tr>
+    <tr>
+        <td width="10%" class="tableleft">网站介绍</td>
+        <td><input type="text" name="intro"/></td>
+    </tr>
+    <tr>
+        <td width="10%" class="tableleft">登录链接</td>
+        <td><input type="text" name="loginUrl"/></td>
+    </tr>
+    <tr>
+        <td width="10%" class="tableleft">下注链接</td>
+        <td><input type="text" name="chipInUrl"/></td>
+    </tr>
+    <tr>
+        <td class="tableleft">期数链接</td>
+        <td><input type="text" name="periodsUrl"/></td>
+    </tr>
+    <tr>
+        <td class="tableleft">账户链接</td>
+        <td><input type="text" name="accountUrl"/></td>
+    </tr>
+    <tr>
+        <td class="tableleft">同意链接</td>
+        <td><input type="text" name="agreementUrl"/></td>
+    </tr>
+    <tr>
+        <td class="tableleft">当前期数状态链接</td>
+        <td><input type="text" name="currentPeriodStatusUrl"/></td>
+    </tr>
+    <tr>
+        <td class="tableleft">开奖号码链接</td>
+        <td><input type="text" name="drawNoUrl"/></td>
+    </tr>
+    <tr>
+        <td class="tableleft">上传文件链接</td>
+        <td><input type="text" name="uploadBetNosUrl"/></td>
+    </tr>
+    <tr>
+        <td class="tableleft">根链接</td>
+        <td><input type="text" name="rootUrl"/></td>
+    </tr>
+    <tr>
+        <td class="tableleft">认证类名称</td>
+        <td><select id="authentClassName" name="authentClassName"></select></td>
+    </tr>
+    <tr>
+        <td class="tableleft">批量下注链接</td>
+        <td><input type="text" name="batchBetUrl"/></td>
+    </tr>
+    <tr>
+        <td class="tableleft"></td>
+        <td>
+            <button type="button" class="button button-primary" id="gosave">保存</button>&nbsp;&nbsp;<button type="button" class="button button-success" name="goback" id="goback">返回列表</button>
+        </td>
+    </tr>
+</table>
+</form>
+</body>
+</html>
+<script type="text/javascript">
+    BUI.use('bui/overlay',function(overlay){
+
+        function show () {
+            BUI.Message.Show({
+                msg : '添加成功！',
+                icon : 'success',
+                buttons : [],
+                autoHide : true,
+                autoHideDelay : 1000
+            });
+        }
+
+
+        $('#goback').click(function(){
+            window.location.href="./index";
+        });
+
+        $("#gosave").click(function(){
+            $.ajax({
+                type: "POST",
+                url: "./save",
+                data: $("#lotteryForm").serialize(),
+                dataType: "json",
+                success: function(data){
+                    if(data.code=="SUCCESS"){
+                        show();
+                    }
+                }
+            });
+        });
+
+
+        $.ajax({
+            type: "GET",
+            url: "../getAuthent",
+            dataType: "json",
+            success: function(data){
+
+                if(data.code=="SUCCESS"){
+                    var options = data.data;
+                    for(var i = 0; i < options.length;i++){
+                        var val = options[i];
+                        $("#authentClassName").append("<option value='"+val+"'>"+val+"</option>");
+                    }
+                }
+            }
+        });
+
+    });
+
+</script>
+<script>
+    $(function () {
+
+
+    });
+
+
+
+</script>
