@@ -105,15 +105,6 @@
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>1.9.1</version>
 
-                <executions>
-                    <execution>
-                        <id>timestamp-property</id>
-                        <goals>
-                            <goal>timestamp-property</goal>
-                        </goals>
-                    </execution>
-                </executions>
-
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
