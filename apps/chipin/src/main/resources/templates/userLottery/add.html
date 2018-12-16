@@ -28,8 +28,8 @@
     </style>
 </head>
 <form method="post" id="userLotteryForm">
-    <input type="text" id="userId" name="userId"/>
-    <input type="text" id="lotteryId" name="lotteryId"/>
+    <input type="hidden" id="userId" name="userId"/>
+    <input type="hidden" id="lotteryId" name="lotteryId"/>
 <table class="table table-bordered table-hover definewidth m10">
     <tr>
         <td width="10%" class="tableleft">用户</td>
@@ -123,7 +123,7 @@
     function loadUser(){
         $.ajax({
             type: "GET",
-            url: "../user/list",
+            url: "/common/user/list",
             dataType: "json",
             success: function(data){
 

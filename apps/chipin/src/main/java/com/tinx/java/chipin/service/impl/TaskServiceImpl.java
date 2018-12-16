@@ -1,29 +1,31 @@
 package com.tinx.java.chipin.service.impl;
 
+import com.baomidou.mybatisplus.mapper.Condition;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.tinx.java.chipin.entity.Sysconfig;
+import com.tinx.java.chipin.entity.ChipinConfig;
 import com.tinx.java.chipin.entity.Task;
 import com.tinx.java.chipin.entity.query.TaskQuery;
 import com.tinx.java.chipin.entity.vo.TaskVo;
 import com.tinx.java.chipin.mapper.TaskDao;
-import com.tinx.java.chipin.page.CustomPage;
+import com.tinx.java.common.page.CustomPage;
 import com.tinx.java.chipin.page.PageQuery;
-import com.tinx.java.chipin.service.SysconfigService;
+import com.tinx.java.chipin.service.ChipinConfigService;
 import com.tinx.java.chipin.service.TaskService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.tinx.java.chipin.utils.FileUtils;
+import com.tinx.java.common.constraint.Helper;
+import com.tinx.java.common.entity.User;
 import com.tinx.java.common.response.enums.VisibilityEnum;
 import com.tinx.java.common.utils.BeanConverter;
+import com.tinx.java.common.utils.ServletUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -38,7 +40,7 @@ import java.util.List;
 public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskService {
 
     @Autowired
-    private SysconfigService sysconfigService;
+    private ChipinConfigService chipinConfigService;
 
     @Override
     public CustomPage<TaskVo> selectPageList(TaskQuery query) {
@@ -47,15 +49,39 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         pagePlus.setPageIndex(query.getPageIndex());
         Task task = new Task();
         BeanUtils.copyProperties(query,task);
-        pagePlus.setData(task);
-
-        Page<Task> pageList = selectPage(pagePlus.getPagePlus());
+        Wrapper wrapper = Condition.create();
+        if(query.getVisibility()==null){
+            query.setVisibility(1);
+        }
+        wrapper.eq("visibility",query.getVisibility());
+        if(query.getUserId()!=null){
+            wrapper.eq("user_id",query.getUserId());
+        }
+        if(StringUtils.isNotEmpty(query.getUserName())){
+            wrapper.eq("user_name",query.getUserName());
+        }
+        Page<Task> pageList = selectPage(pagePlus.getPagePlus(),wrapper);
         List<Task> tasks = pageList.getRecords();
         List<TaskVo> taskVos = BeanConverter.copy(tasks,TaskVo.class);
         CustomPage<TaskVo> customPage = new CustomPage<TaskVo>(pageList);
         customPage.setRows(taskVos);
         return customPage;
     }
+
+    @Override
+    public CustomPage<TaskVo> selectRecyclePageList(TaskQuery query) {
+        query.setVisibility(0);
+        return selectPageList(query);
+    }
+
+    public CustomPage<TaskVo> selectSelfPageList(TaskQuery query){
+        User user  = (User) ServletUtils.getSession().getAttribute(Helper.SESSION_USER);
+
+        query.setUserId(user.getId());
+        return selectPageList(query);
+    }
+
+
 
     @Override
     public Long save(TaskQuery query) {
@@ -68,8 +94,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     }
 
     private void initChipinFile(TaskQuery query){
-        Sysconfig sysconfig = sysconfigService.getValue("LOTTERY","TEMP");
-        String rooPath = sysconfig.getCfgValue();
+        ChipinConfig config = chipinConfigService.getValue("LOTTERY","TEMP");
+        String rooPath = config.getCfgValue();
         String path = rooPath+String.format("/%s/%s/%s/",query.getLotteryId(),query.getId(),query.getUserId());
         String filename = String.format("%s%s%s.txt",query.getLotteryId(),query.getId(),query.getUserId());
         String filePath = path+filename;
@@ -95,6 +121,13 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         if(!StringUtils.isEmpty(query.getChipinContent())){
             FileUtils.writeToFile(task1.getChipinFilePath(),query.getChipinContent());
         }
+        return this.updateById(task);
+    }
+
+    public boolean restore(Long id){
+        Task task = new Task();
+        task.setId(id);
+        task.setVisibility(VisibilityEnum.CAN_USE.getCode());
         return this.updateById(task);
     }
 
@@ -125,4 +158,27 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         return FileUtils.readFromFile(task.getChipinFilePath());
     }
 
+    public boolean editSelf(TaskQuery query){
+        User user = (User)ServletUtils.getSession().getAttribute(Helper.SESSION_USER);
+        Task task = selectOne(Condition.create().eq("id",query.getId()).eq("user_id",user.getId()));
+        Task updateTask = new Task();
+        if(task!=null){
+            updateTask.setId(query.getId());
+            updateTask.setAccountMinLimit(query.getAccountMinLimit());
+            updateTask.setAccountMaxLimit(query.getAccountMaxLimit());
+            updateTask.setMoney(query.getMoney());
+            if(!StringUtils.isEmpty(query.getChipinContent())){
+                FileUtils.writeToFile(task.getChipinFilePath(),query.getChipinContent());
+            }
+            updateTask.setRuleId(query.getRuleId());
+            updateTask.setRuleDesc(query.getRuleDesc());
+            updateTask.setRuleName(query.getRuleName());
+            updateTask.setUpdateUser(user.getUserName());
+            if(updateById(updateTask)){
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

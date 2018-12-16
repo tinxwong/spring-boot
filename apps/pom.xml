@@ -15,6 +15,7 @@
     <modules>
         <module>chipin</module>
         <module>permission</module>
+        <module>survey</module>
     </modules>
 
     <dependencies>

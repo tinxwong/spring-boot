@@ -3,12 +3,12 @@ package com.tinx.java.chipin.controller;
 import com.tinx.java.chipin.core.DefaultAuthent;
 import com.tinx.java.chipin.core.rule.ChipinRule;
 import com.tinx.java.chipin.core.rule.Rule;
-import com.tinx.java.chipin.entity.Role;
+import com.tinx.java.chipin.core.sercet.SecretGuid;
 import com.tinx.java.chipin.entity.RuleBean;
-import com.tinx.java.chipin.enums.RoleEnum;
-import com.tinx.java.chipin.service.ChipinService;
+import com.tinx.java.common.controller.BaseController;
 import com.tinx.java.common.response.BaseResponse;
 import com.tinx.java.common.response.status.ResponseCode;
+import com.tinx.java.common.service.BaseService;
 import com.tinx.java.common.utils.ResultUtil;
 import org.reflections.Reflections;
 import org.springframework.stereotype.Controller;
@@ -26,7 +26,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/chipin")
-public class IndexController extends ChipInController{
+public class IndexController extends BaseController{
 
 
     @Override
@@ -35,7 +35,7 @@ public class IndexController extends ChipInController{
     }
 
     @Override
-    public ChipinService getServiceName() {
+    public BaseService getServiceName() {
         return null;
     }
 
@@ -103,19 +103,11 @@ public class IndexController extends ChipInController{
         return ResultUtil.makeBaseResponse(rules, ResponseCode.SUCCESS);
     }
 
-    @RequestMapping(value="/getRoles",method = RequestMethod.GET)
+
+    @RequestMapping(value="/secretguid",method = RequestMethod.GET)
     @ResponseBody
-    public BaseResponse getRoles(){
-
-        List<Role> roles = new ArrayList<>();
-        for(RoleEnum roleEnum:RoleEnum.values()){
-            Role role = new Role();
-
-            role.setRoleId(roleEnum.getCode());
-            role.setRoleName(roleEnum.getName());
-            role.setRoleDesc(roleEnum.getDesc());
-            roles.add(role);
-        }
-        return ResultUtil.makeBaseResponse(roles, ResponseCode.SUCCESS);
+    public void testSecretGuid(){
+        String str = SecretGuid.getGuid();
+        System.out.println("str:"+str);
     }
 }

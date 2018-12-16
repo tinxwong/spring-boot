@@ -274,11 +274,11 @@ public abstract class AbstractChipinRule implements ChipinRule {
             retStr = EntityUtils.toString(httpEntity, "UTF-8");
             logger.info("下注结果:"+retStr);
             int status = JSONObject.fromObject(retStr).getInt("Status");
-            if (status != 0) {
-                throw new RuntimeException("下注失败!");
-            }
-            if(status==1){
+            if (status == 1) {
                 result = "下注成功";
+
+            }else{
+                result = "下注失败!";
             }
             // 释放资源
             closeableHttpClient.close();

@@ -1,7 +1,9 @@
 package com.tinx.java.chipin.service;
 
 import com.tinx.java.chipin.entity.ChipinLog;
-import com.baomidou.mybatisplus.service.IService;
+import com.tinx.java.chipin.entity.query.ChipinLogQuery;
+import com.tinx.java.chipin.entity.vo.ChipinLogVo;
+import com.tinx.java.common.service.BaseService;
 
 /**
  * <p>
@@ -11,7 +13,7 @@ import com.baomidou.mybatisplus.service.IService;
  * @author tinx123
  * @since 2018-10-15
  */
-public interface ChipinLogService extends IService<ChipinLog> {
+public interface ChipinLogService extends BaseService<ChipinLogQuery,ChipinLog,ChipinLogVo> {
 
 
 

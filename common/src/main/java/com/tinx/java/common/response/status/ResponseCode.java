@@ -73,7 +73,11 @@ public enum ResponseCode implements StatusCode {
     PUSH_MX_SERVER_EXIST_ERROR(10000202, "服务号已经推送过此投票"),
     PUSH_ERROR(10000203, "推送错误"),
     USERNAME_UNIQUE_ERROR(10000204, "用户名已存在"),
-    USER_LOTTERY_EXIST(10000204, "用户已关联该网站"),
+    USER_LOTTERY_EXIST(10000205, "用户已关联该网站"),
+    USER_NOT_LOGIN(10000206, "用户未登录"),
+    USER_MSG_ERROR(10000207,"用户名或密码错误！"),
+    LOGIN_VERCODE_ERROR(10000208,"验证码错误"),
+    USER_NOT_RIGHT(10000207,"用户没有权限!"),
     //推送code 10000200 -10000500 end
     ;
 

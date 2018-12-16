@@ -4,6 +4,7 @@ import com.tinx.java.chipin.entity.Task;
 import com.baomidou.mybatisplus.service.IService;
 import com.tinx.java.chipin.entity.query.TaskQuery;
 import com.tinx.java.chipin.entity.vo.TaskVo;
+import com.tinx.java.common.service.BaseService;
 import org.apache.tomcat.util.threads.TaskQueue;
 
 /**
@@ -14,7 +15,7 @@ import org.apache.tomcat.util.threads.TaskQueue;
  * @author tinx123
  * @since 2018-08-11
  */
-public interface TaskService extends ChipinService<TaskQuery,Task,TaskVo> {
+public interface TaskService extends BaseService<TaskQuery,Task,TaskVo> {
 
     public String getFileContent(Long id);
 }

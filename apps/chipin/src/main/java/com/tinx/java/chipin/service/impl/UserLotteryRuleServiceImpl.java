@@ -4,7 +4,7 @@ import com.tinx.java.chipin.entity.UserLotteryRule;
 import com.tinx.java.chipin.entity.query.UserLotteryRuleQuery;
 import com.tinx.java.chipin.entity.vo.UserLotteryRuleVo;
 import com.tinx.java.chipin.mapper.UserLotteryRuleDao;
-import com.tinx.java.chipin.page.CustomPage;
+import com.tinx.java.common.page.CustomPage;
 import com.tinx.java.chipin.service.UserLotteryRuleService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -46,4 +46,19 @@ public class UserLotteryRuleServiceImpl extends ServiceImpl<UserLotteryRuleDao, 
     public boolean batchRev(List<Long> idList) {
         return false;
     }
+
+    public CustomPage<UserLotteryRuleVo> selectSelfPageList(UserLotteryRuleQuery query){
+        return null;
+    }
+
+    @Override
+    public CustomPage<UserLotteryRuleVo> selectRecyclePageList(UserLotteryRuleQuery query) {
+        return null;
+    }
+
+    public boolean editSelf(UserLotteryRuleQuery query){
+        return false;
+    }
+
+    public boolean restore(Long id){return false;}
 }

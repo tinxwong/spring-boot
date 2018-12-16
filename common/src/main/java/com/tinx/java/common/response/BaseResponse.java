@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONPObject;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.annotation.JSONType;
 import com.tinx.java.common.response.enums.ResponseCode;
+import com.tinx.java.common.response.status.interfaces.Status;
 import com.tinx.java.common.response.status.interfaces.StatusCode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -23,7 +24,7 @@ public final class BaseResponse<T> implements Response, Serializable {
     /**
      * 状态码
      */
-    private StatusCode code;
+    private Status code;
     /**
      * 消息(错误）
      */
@@ -54,11 +55,11 @@ public final class BaseResponse<T> implements Response, Serializable {
         this.callback = callback;
     }
 
-    public StatusCode getCode() {
+    public Status getCode() {
         return code;
     }
 
-    public void setCode(StatusCode code) {
+    public void setCode(Status code) {
         this.code = code;
         this.msg = code.msg();
     }

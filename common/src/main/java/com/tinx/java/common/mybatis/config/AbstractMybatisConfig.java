@@ -1,5 +1,7 @@
 package com.tinx.java.common.mybatis.config;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.baomidou.mybatisplus.MybatisConfiguration;
 import com.baomidou.mybatisplus.MybatisXMLLanguageDriver;
 import com.baomidou.mybatisplus.entity.GlobalConfiguration;
@@ -9,6 +11,7 @@ import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
 import com.tinx.java.common.mybatis.ext.injector.SqlInjector;
 import com.tinx.java.common.mybatis.handler.DataMetaObjectHandler;
 import com.tinx.java.common.utils.ListUtil;
+import com.tinx.java.common.utils.SqlInitUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.plugin.Interceptor;
@@ -25,6 +28,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Properties;
 
 /**
  * @author tinx
@@ -121,6 +125,7 @@ public abstract class AbstractMybatisConfig extends MapperScannerConfigurer {
         if (StringUtils.isBlank(password)) {
             password = applicationContext.getEnvironment().getProperty(DEFAULT_MODULE_PREFIX + ".datasource.password");
         }
+
         return makeDataSource(url, username, password);
     }
 
@@ -129,16 +134,36 @@ public abstract class AbstractMybatisConfig extends MapperScannerConfigurer {
             url = url + "?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false";
         }
         logger.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx:url={},username={},password={}",url,username,password);
-
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        SqlInitUtils.initDatabase(url,username,password,getModelName());
+//        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+//        dataSource.setUrl(url);
+//        dataSource.setUsername(username);
+//        dataSource.setPassword(password);
+        DruidDataSource dataSource = new DruidDataSource();
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         dataSource.setUrl(url);
         dataSource.setUsername(username);
+        try {
+            dataSource.setFilters("config,wall,stat");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        dataSource.setInitialSize(5);
+        dataSource.setMaxActive(20);
+        dataSource.setMinIdle(0);
+        dataSource.setMaxWait(60000);
+        dataSource.setValidationQuery("SELECT 1");
+        dataSource.setTestOnBorrow(false);
+        dataSource.setTestWhileIdle(true);
+        dataSource.setPoolPreparedStatements(false);
         dataSource.setPassword(password);
         return dataSource;
     }
     @Override
     public void afterPropertiesSet() throws Exception {
+//        SqlInitUtils.loadSqlFiles(this);
+
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory)applicationContext.getAutowireCapableBeanFactory();
 
         // data source

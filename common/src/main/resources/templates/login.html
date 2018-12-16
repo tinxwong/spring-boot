@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title></title>
+	<link rel="stylesheet" href="/static/assets/css/reset.css" />
+	<link rel="stylesheet" href="/static/assets/css/login.css" />
+	<link href="/static/assets/css/bui.css" rel="stylesheet">
+        <script type="text/javascript" src="/static/assets/js/jquery-1.8.1.min.js"></script>
+	<script src="/static/assets/js/bui-min.js"></script>
+        <script type="text/javascript" src="/static/assets/js/login.js"></script>
+	<script type="text/javascript" src="/static/assets/js/base64.js"></script>
+
+</head>
+<body>
+<div class="page">
+	<div class="loginwarrp">
+		<div class="logo">管理员登陆</div>
+        <div class="login_form">
+			<form id="LoginForm" name="Login" method="post" action="./login">
+				<li class="login-item">
+					<span>用户名：</span>
+					<input type="text" id="username" name="userName" class="login_input" >
+                                        <span id="count-msg" class="error"></span>
+				</li>
+				<li class="login-item">
+					<span>密　码：</span>
+					<input type="password" id="pwd" name="pwd" class="login_input" >
+                                        <span id="password-msg" class="error"></span>
+				</li>
+				<li class="login-item verify">
+					<span>验证码：</span>
+					<input type="text" id="checkCode" name="checkCode" class="login_input verify_input">
+				</li>
+				<img src="/common/ver/getImage" border="0" class="verifyimg" onclick="javascript:changeImg()"/>
+				<div class="clearfix"></div>
+				<li class="login-sub">
+					<input type="button" id="gotoLogin" name="gotoLogin" value="登录" />
+                                        <input type="reset" name="Reset" value="重置" />
+				</li>                      
+           </form>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+    BUI.use('bui/overlay',function(overlay){
+        function show (msg,icon) {
+            BUI.Message.Show({
+                msg : msg,
+                icon : icon,
+                buttons : [],
+                autoHide : true,
+                autoHideDelay : 1000
+            });
+        }
+
+        $("#gotoLogin").click(function(){
+            var oldPwd = $("#pwd").val();
+            var pwd = Base64.encode(oldPwd);
+            $("#pwd").val(pwd);
+            $.ajax({
+                type: "POST",
+                url: "./login",
+                data:$("#LoginForm").serialize(),
+                dataType: "json",
+                success: function(data){
+                    if(data.code=="SUCCESS"){
+                        window.location.href = "/common/index";
+                    }else{
+                        changeImg();
+                        $("#pwd").val(oldPwd);
+                        show(data.msg,"error");
+                    }
+                }
+            });
+        });
+
+    });
+		window.onload = function() {
+			var config = {
+				vx : 4,
+				vy : 4,
+				height : 2,
+				width : 2,
+				count : 100,
+				color : "121, 162, 185",
+				stroke : "100, 200, 180",
+				dist : 6000,
+				e_dist : 20000,
+				max_conn : 10
+			}
+			CanvasParticle(config);
+		}
+
+        function changeImg(){
+            $(".verifyimg").attr("src","/common/ver/getImage?date=" + new Date());
+        }
+
+        $(document).ready(function(){
+
+
+
+		});
+
+
+
+	</script>
+	<script type="text/javascript" src="/static/assets/js/canvas-particle.js"></script>
+
+</body>
+</html>

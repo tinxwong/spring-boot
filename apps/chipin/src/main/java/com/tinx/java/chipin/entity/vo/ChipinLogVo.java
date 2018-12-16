@@ -71,5 +71,13 @@ public class ChipinLogVo extends ChipinVo implements Serializable {
      */
     private String accountBalance;
 
+    private String betsContent;
 
+    private Integer betsSize;
+
+    private String chipinTimeScope;
+
+    private String nextChipinTime;
+
+    private String executeRuleName;
 }

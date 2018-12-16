@@ -196,7 +196,7 @@ public final class StringUtil {
     /**
      * 
      * 创建时间 2018-9-7 16:20
-     * @author 陆国鸿
+     * @author
      * @param obj1
      * @param obj2
      * @return
@@ -219,4 +219,10 @@ public final class StringUtil {
             }
         }
     }
+
+    public static void main(String[] args){
+
+        System.out.println(MD5("/chipin/secretguid"));
+    }
+
 }

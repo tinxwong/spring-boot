@@ -11,19 +11,23 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author tinx123
- * @since 2018-10-15
+ * @since 2018-12-10
  */
 @Data
 @TableName("chipin_log")
-public class ChipinLog extends ChipinEntity {
+public class ChipinLog implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-
+    /**
+     * 唯一标识
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
     /**
      * 用户ID
      */
@@ -37,13 +41,13 @@ public class ChipinLog extends ChipinEntity {
     /**
      * 投注用户ID
      */
-    @TableField("chipin_time_scope")
-    private String chipinTimeScope;
+    @TableField("lottery_user_id")
+    private Long lotteryUserId;
     /**
      * 投注用户名
      */
-    @TableField("next_chipin_time")
-    private String nextChipinTime;
+    @TableField("lottery_user_name")
+    private String lotteryUserName;
     /**
      * 任务ID
      */
@@ -74,7 +78,27 @@ public class ChipinLog extends ChipinEntity {
     @TableField("period_no")
     private String periodNo;
     /**
-     * 执行结果
+     * 创建时间
+     */
+    @TableField("create_time")
+    private Date createTime;
+    /**
+     * 创建人
+     */
+    @TableField("create_user")
+    private String createUser;
+    /**
+     * 修改人
+     */
+    @TableField("update_user")
+    private String updateUser;
+    /**
+     * 修改时间
+     */
+    @TableField("update_time")
+    private Date updateTime;
+    /**
+     * 结果
      */
     private String results;
     /**
@@ -82,10 +106,23 @@ public class ChipinLog extends ChipinEntity {
      */
     @TableField("account_balance")
     private String accountBalance;
+    /**
+     * 执行规则名称
+     */
+    @TableField("execute_rule_name")
+    private String executeRuleName;
 
+    private Integer visibility;
+
+    @TableField("bets_content")
     private String betsContent;
 
-    private int betsSize;
+    @TableField("bets_size")
+    private Integer betsSize;
 
+    @TableField("chipin_time_scope")
+    private String chipinTimeScope;
 
+    @TableField("next_chipin_time")
+    private String nextChipinTime;
 }

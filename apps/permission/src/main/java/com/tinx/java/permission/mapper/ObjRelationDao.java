@@ -5,7 +5,7 @@ import com.tinx.java.permission.entity.ObjRelation;
 
 /**
  * <p>
- *  Mapper æ¥å£
+ *  Mapper ½Ó¿Ú
  * </p>
  *
  * @author tinx123

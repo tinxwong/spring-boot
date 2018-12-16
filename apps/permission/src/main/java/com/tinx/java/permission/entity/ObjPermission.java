@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -16,113 +17,78 @@ import java.util.Date;
  * @author tinx123
  * @since 2018-10-31
  */
+@Data
 @TableName("obj_permission")
 public class ObjPermission implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 唯一标识
+     * Ψһ��ʶ
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
-     * 对象ID
+     * ����ID
      */
     @TableField("obj_id")
     private Long objId;
     /**
-     * 对象类型
+     * ��������
      */
     @TableField("obj_type")
     private String objType;
     /**
-     * url的md5加密值
+     * url��md5����ֵ
      */
     @TableField("md_key")
     private String mdKey;
     /**
-     * 创建时间
+     * ����ʱ��
      */
     @TableField("create_time")
     private Date createTime;
     /**
-     * 创建人
+     * ������
      */
     @TableField("create_user")
-    private byte[] createUser;
+    private String createUser;
     /**
-     * 访问链接
+     * ��������
      */
     private String url;
 
+    /**
+     * ��ʶ
+     */
+    private String instruction;
+    /**
+     * Ӧ������
+     */
+    @TableField("app_name")
+    private String appName;
+    /**
+     * ģ������
+     */
+    @TableField("module_name")
+    private String moduleName;
+    /**
+     * ��������
+     */
+    @TableField("url_type")
+    private String urlType;
+    /**
+     * CSS����
+     */
+    @TableField("css_name")
+    private String cssName;
+    /**
+     * ��ʾ����
+            */
+    @TableField("show_name")
+    private String showName;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private Integer visibility;
 
-    public Long getObjId() {
-        return objId;
-    }
-
-    public void setObjId(Long objId) {
-        this.objId = objId;
-    }
-
-    public String getObjType() {
-        return objType;
-    }
-
-    public void setObjType(String objType) {
-        this.objType = objType;
-    }
-
-    public String getMdKey() {
-        return mdKey;
-    }
-
-    public void setMdKey(String mdKey) {
-        this.mdKey = mdKey;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public byte[] getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(byte[] createUser) {
-        this.createUser = createUser;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    @Override
-    public String toString() {
-        return "ObjPermission{" +
-        "id=" + id +
-        ", objId=" + objId +
-        ", objType=" + objType +
-        ", mdKey=" + mdKey +
-        ", createTime=" + createTime +
-        ", createUser=" + createUser +
-        ", url=" + url +
-        "}";
-    }
 }

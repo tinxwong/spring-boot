@@ -1,5 +1,7 @@
 package com.tinx.java.chipin.service;
 
+import com.baomidou.mybatisplus.mapper.Condition;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.tinx.java.chipin.entity.Lottery;
 import com.tinx.java.chipin.entity.Task;
 import com.tinx.java.chipin.entity.UserLottery;
@@ -9,10 +11,13 @@ import com.tinx.java.chipin.thread.entity.ChipinTaskJob;
 import com.tinx.java.chipin.thread.entity.K1Cathectic;
 import com.tinx.java.chipin.thread.entity.TaskParameter;
 import com.tinx.java.chipin.utils.MapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
 
 /**
  * @author tinx
@@ -20,6 +25,8 @@ import org.springframework.web.client.RestTemplate;
  */
 @Service
 public class TaskExecutorService {
+
+    private Logger logger = LoggerFactory.getLogger(TaskExecutorService.class);
 
     @Autowired
     private ThreadPoolTaskExecutor taskExecutor;
@@ -33,21 +40,45 @@ public class TaskExecutorService {
     @Autowired
     private UserLotteryService userLotteryService;
 
-    public void startJob(Long id){
-        Task task = taskService.selectById(id);
-        Lottery lottery = lotteryService.selectById(task.getLotteryId());
-        UserLottery userLottery = userLotteryService.selectByUserId(task.getUserId());
-//        Cathectic cathectic = new K1Cathectic(lottery);
-        ChipinTaskJob chipinTaskJob = new ChipinTaskJob(task,lottery,userLottery);
-        MapUtils.put("THREAD_"+id,chipinTaskJob);
-        taskExecutor.submit(chipinTaskJob);
+    public void startJob(Long id,Long userId){
+        Wrapper wrapper = Condition.create();
+        if(id!=null&&id>0){
+            wrapper.eq("id",id);
+        }
+        if(userId!=null&&userId>0){
+            wrapper.eq("user_id",userId);
+        }
+        Task task = taskService.selectOne(wrapper);
+        if(task!=null){
+            Lottery lottery = lotteryService.selectById(task.getLotteryId());
+            UserLottery userLottery = userLotteryService.selectByParam(task.getUserId(),task.getLotteryId());
+            ChipinTaskJob chipinTaskJob = new ChipinTaskJob(task,lottery,userLottery);
+            MapUtils.put("THREAD_"+id,chipinTaskJob);
+            taskExecutor.submit(chipinTaskJob);
+        }
+
     }
 
-    public void stopJob(Long id){
-        System.out.println("停止[THREAD_"+id+"]线程");
-        ChipinTaskJob chipinTaskJob = (ChipinTaskJob)MapUtils.get("THREAD_"+id);
-        chipinTaskJob.setSignal(false);
-        updateTaskStatus(id,TaskStatusEnum.STOP.getCode());
+    public void stopJob(Long id,Long userId){
+        logger.info("停止[THREAD_"+id+"]线程");
+        Wrapper wrapper = Condition.create();
+        if(id!=null&&id>0){
+            wrapper.eq("id",id);
+        }
+        if(userId!=null&&userId>0){
+            wrapper.eq("user_id",userId);
+        }
+        Task task = taskService.selectOne(wrapper);
+        if(task!=null){
+            try{
+                ChipinTaskJob chipinTaskJob = (ChipinTaskJob)MapUtils.get("THREAD_"+id);
+                chipinTaskJob.setSignal(false);
+            }catch (Exception e){
+                logger.error(e.getMessage());
+            }
+            updateTaskStatus(id,TaskStatusEnum.STOP.getCode());
+        }
+
 
     }
 

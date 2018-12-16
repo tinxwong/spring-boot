@@ -28,7 +28,7 @@ public class UserLottery extends ChipinEntity {
      * 用户ID
      */
     @TableField("user_id")
-    private Integer userId;
+    private Long userId;
     /**
      * 网站ID
      */

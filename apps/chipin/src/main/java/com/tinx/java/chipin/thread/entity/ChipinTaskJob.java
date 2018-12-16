@@ -97,14 +97,25 @@ public class ChipinTaskJob implements Callable{
                 setSignal(false);
             }else{
                 try {
+                    System.out.println("时间到了，开始执行！");
                     Map<String,String> map = TimestampUtils.getChipinTimeScope();
                     long chipipTime = TimestampUtils.getNextChipinTime(map);
-                    logger.info("睡眠时间长度={},下次执行时间={}",chipipTime,TimestampUtils.transForDate(chipipTime));
+                    long selectTime = chipipTime*1000-System.currentTimeMillis();
+                    String nextTime = TimestampUtils.timeStamp2Date(String.valueOf(chipipTime),"");
+                    logger.info("当前执行时间={},下次执行范围={},睡眠时间长度={},下次执行时间={}", TimestampUtils.currDate(""),map,selectTime, nextTime);
                     chipinLog.setChipinTimeScope(map.toString());
-                    chipinLog.setNextChipinTime(TimestampUtils.transForDate(chipipTime));
+                    chipinLog.setNextChipinTime(nextTime);
                     ChipinLogService chipinLogService = (ChipinLogService)SpringContextUtils.getBean("chipinLogServiceImpl");
                     chipinLogService.insert(chipinLog);
-                    Thread.sleep(chipipTime);
+                    Thread.sleep(selectTime);
+//                    Map<String,String> map = TimestampUtils.getChipinTimeScope();
+//                    long chipipTime = TimestampUtils.getNextChipinTime(map);
+//                    logger.info("睡眠时间长度={},下次执行时间={}",chipipTime,TimestampUtils.transForDate(chipipTime));
+//                    chipinLog.setChipinTimeScope(map.toString());
+//                    chipinLog.setNextChipinTime(TimestampUtils.transForDate(chipipTime));
+//                    ChipinLogService chipinLogService = (ChipinLogService)SpringContextUtils.getBean("chipinLogServiceImpl");
+//                    chipinLogService.insert(chipinLog);
+//                    Thread.sleep(chipipTime);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

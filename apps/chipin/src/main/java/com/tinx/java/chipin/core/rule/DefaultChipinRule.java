@@ -101,7 +101,7 @@ public class DefaultChipinRule extends AbstractChipinRule {
 
         }
         ChipinLog chipinLog = new ChipinLog();
-        chipinLog.setBetsContent(betsContent);
+//        chipinLog.setBetsContent(betsContent);
         chipinLog.setBetsSize(betsSize);
         chipinLog.setTaskId(task.getId());
         chipinLog.setUserName(task.getUserName());
@@ -109,6 +109,7 @@ public class DefaultChipinRule extends AbstractChipinRule {
         chipinLog.setBetMoney(task.getMoney().toString());
         chipinLog.setPeriodNo(periodNo);
         chipinLog.setResults(result);
+        chipinLog.setExecuteRuleName(getRuleName());
         chipinLog.setAccountBalance(accountBalance.toString());
         return chipinLog;
     }

@@ -81,8 +81,8 @@ public class PeriodNumberChipinRule extends AbstractChipinRule {
             result = String.format("MAX:%s,MIN:%s,BALANCE:%s",accountMax.toString(),accountMin.toString(),balance);
         }else{
             if(!matchDrawNoTable(task,lottery)){
-//                result = simulateChipin(task,lottery);
-                result="执行下注功能";
+                result = simulateChipin(task,lottery);
+//                result="执行下注功能";
             }else{
                 result = "下注号码匹配了开奖号码，取消执行下注功能";
             }
@@ -93,7 +93,18 @@ public class PeriodNumberChipinRule extends AbstractChipinRule {
                 e.printStackTrace();
             }
         }
-        return new ChipinLog();
+        ChipinLog chipinLog = new ChipinLog();
+//        chipinLog.setBetsContent(betsContent);
+        chipinLog.setBetsSize(betsSize);
+        chipinLog.setTaskId(task.getId());
+        chipinLog.setUserName(task.getUserName());
+        chipinLog.setUserId(task.getUserId());
+        chipinLog.setBetMoney(task.getMoney().toString());
+        chipinLog.setPeriodNo(periodNo);
+        chipinLog.setResults(result);
+        chipinLog.setExecuteRuleName(getRuleName());
+        chipinLog.setAccountBalance(balance);
+        return chipinLog;
     }
 
 

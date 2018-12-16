@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * <p>
- *  å‰ç«¯æ§åˆ¶å™¨
+ *  Ç°¶Ë¿ØÖÆÆ÷
  * </p>
  *
  * @author tinx123

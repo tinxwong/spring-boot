@@ -8,9 +8,9 @@ import org.springframework.context.annotation.PropertySource;
  * @author tinx
  * @date 2018-10-26 17:31
  */
-@Configuration
-@PropertySource(value = {"classpath:config/main-jdbc.properties"})
-public class MainMybatisConfig extends AbstractMybatisConfig{
+//@Configuration
+//@PropertySource(value = {"classpath:config/main-jdbc.properties"})
+public class MainMybatisConfig{ //extends AbstractMybatisConfig{
 
     public String getModelName() {
         return "main";

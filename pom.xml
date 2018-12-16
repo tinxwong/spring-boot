@@ -73,7 +73,7 @@
     </profiles>
 
     <build>
-        <finalName>saas-${project.artifactId}</finalName>
+        <finalName>${project.artifactId}</finalName>
         <!-- 指定资源文件目录 -->
         <resources>
             <resource>

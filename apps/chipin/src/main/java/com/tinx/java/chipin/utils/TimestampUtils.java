@@ -47,6 +47,14 @@ public class TimestampUtils {
         String[] arrTime = time.split(":");
         String clock = arrTime[0];
         String minute = arrTime[1];
+        if(judgeCriticalValue()){
+            String startTime = String.format("%s 22:01:00",date);
+            String endTime = String.format("%s 22:04:00",date);
+            map.put("start",startTime);
+            map.put("end",endTime);
+            return map;
+        }
+
         String second = arrTime[2];
         int scope = Integer.parseInt(minute)/base;
 
@@ -72,14 +80,8 @@ public class TimestampUtils {
                 startScope = "01";
                 endScope = "04";
             }else{
-                if(scope%2==1){
-                    startScope = ""+(temp+1);
-                    endScope = ""+(temp+4);
-                }
-                if(scope%2==0){
-                    startScope = ""+(temp+6);
-                    endScope = ""+(temp+9);
-                }
+                startScope = ""+(temp+1);
+                endScope = ""+(temp+4);
             }
 
         }
@@ -200,6 +202,21 @@ public class TimestampUtils {
             str = sdf.format(ms);
         }
         return str;
+    }
+
+
+    public static boolean judgeCriticalValue(){
+        String date = currDate("yyyy-MM-dd");
+        String startTime = String.format("%s 21:50:00",date);
+        String endTime = String.format("%s 21:59:59",date);
+        long startTimestamp = getTimestamp(startTime);
+        long endTimestamp = getTimestamp(endTime);
+        String currDate = currDate("yyyy-MM-dd HH:mm:ss");
+        long currTimestamp = getTimestamp(currDate);
+        if(startTimestamp<currTimestamp&&currTimestamp<endTimestamp){
+            return true;
+        }
+        return false;
     }
 
 }

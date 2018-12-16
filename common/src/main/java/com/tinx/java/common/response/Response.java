@@ -1,5 +1,6 @@
 package com.tinx.java.common.response;
 
+import com.tinx.java.common.response.status.interfaces.Status;
 import com.tinx.java.common.response.status.interfaces.StatusCode;
 
 /**
@@ -10,7 +11,7 @@ import com.tinx.java.common.response.status.interfaces.StatusCode;
  */
 public interface Response<T> {
 
-    StatusCode getCode();
+    Status getCode();
 
     String getMsg();
 

@@ -2,13 +2,16 @@ package com.tinx.java;
 
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure;
 import com.tinx.java.common.utils.SpringContextUtils;
+import com.tinx.java.common.utils.SqlInitUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 
 /**
  * @author tinx
@@ -24,5 +27,10 @@ public class MainApplication {
         ApplicationContext app = SpringApplication.run(MainApplication.class, args);
         SpringContextUtils.setApplicationContext(app);
         logger.info("服务启动成功...");
+    }
+
+    @Bean
+    public TomcatServletWebServerFactory servletContainer(){
+        return new TomcatServletWebServerFactory(80) ;
     }
 }

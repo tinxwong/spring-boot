@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.tinx.java.chipin.enums.RoleEnum;
+import com.tinx.java.common.enums.GenderEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -75,6 +76,8 @@ public class UserVo implements Serializable {
 
     private String roleDesc;
 
+    private String sexDesc;
+
     public String getRoleDesc(){
         for(RoleEnum roleEnum:RoleEnum.values()){
             System.out.println("getRoleId().intValue():"+getRoleId().intValue());
@@ -84,5 +87,16 @@ public class UserVo implements Serializable {
             }
         }
         return "";
+    }
+
+    public String getSexDesc(){
+        for(GenderEnum genderEnum:GenderEnum.values()){
+            System.out.println("sex1:"+genderEnum.getCode());
+            System.out.println("sex2:"+getSexDesc());
+            if(genderEnum.getCode().equals(getSex())){
+                return genderEnum.getName();
+            }
+        }
+        return getSex();
     }
 }

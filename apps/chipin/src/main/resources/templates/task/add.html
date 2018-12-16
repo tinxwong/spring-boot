@@ -50,23 +50,23 @@
     </tr>
     <tr>
         <td class="tableleft">账户最大金额</td>
-        <td><input type="text" name="accountMaxLimit"/></td>
+        <td><input type="text" name="accountMaxLimit" value="1000"/></td>
     </tr>
     <tr>
         <td class="tableleft">账户最小金额</td>
-        <td><input type="text" name="accountMinLimit"/></td>
+        <td><input type="text" name="accountMinLimit" value="0"/></td>
     </tr>
-    <tr>
+  <!--  <tr>
         <td class="tableleft">任务间隔时间</td>
         <td><input type="text" name="intervalTime"/></td>
-    </tr>
+    </tr>-->
     <tr>
         <td class="tableleft">投注金额</td>
         <td><input type="text" name="money"/></td>
     </tr>
     <tr>
         <td class="tableleft">投注内容</td>
-        <td><textarea id="chipinContent" name="chipinContent"></textarea></td>
+        <td><textarea id="chipinContent" name="chipinContent" style="width:80%;"></textarea></td>
     </tr>
     <tr>
         <td class="tableleft">规则</td>
@@ -85,7 +85,10 @@
 </form>
 </body>
 </html>
-<script type="text/javascript">
+<script type="text/javascript" th:inline="javascript">
+    var myUsers = [[${users}]];
+    var myRules = [[${rules}]];
+    var myLotteries = [[${lotteries}]];
     BUI.use('bui/overlay',function(overlay){
 
         function show () {
@@ -116,9 +119,9 @@
                 }
             });
         });
-        loadUser();
-        loadLottery();
-        loadRule();
+        initUserOption();
+        initLotteryOption();
+        initRuleOption();
 
         $("#ruleSelect").change(function(){
             var obj = $("#ruleSelect  option:selected");
@@ -144,57 +147,77 @@
 
 
     });
+//
+//    function loadLottery(){
+//        $.ajax({
+//            type: "GET",
+//            url: "../lottery/list",
+//            dataType: "json",
+//            success: function(data){
+//
+//                if(data.code=="SUCCESS"){
+//                    var options = data.data;
+//                    for(var i = 0; i < options.length;i++){
+//                        var val = options[i];
+//                        $("#lotterySelect").append("<option lotteryid='"+val.id+"' lotteryname='"+val.name+"'>"+val.name+"</option>");
+//                    }
+//                }
+//            }
+//        });
+//    }
 
-    function loadLottery(){
-        $.ajax({
-            type: "GET",
-            url: "../lottery/list",
-            dataType: "json",
-            success: function(data){
-
-                if(data.code=="SUCCESS"){
-                    var options = data.data;
-                    for(var i = 0; i < options.length;i++){
-                        var val = options[i];
-                        $("#lotterySelect").append("<option lotteryid='"+val.id+"' lotteryname='"+val.name+"'>"+val.name+"</option>");
-                    }
-                }
-            }
-        });
+    function initLotteryOption(){
+        for(var i = 0; i < myLotteries.length;i++){
+            var val = myLotteries[i];
+            $("#lotterySelect").append("<option lotteryid='"+val.id+"' lotteryname='"+val.name+"'>"+val.name+"</option>");
+        }
     }
-    function loadUser(){
-        $.ajax({
-            type: "GET",
-            url: "../user/list",
-            dataType: "json",
-            success: function(data){
+//    function loadUser(){
+//        $.ajax({
+//            type: "GET",
+//            url: "../user/list",
+//            dataType: "json",
+//            success: function(data){
+//
+//                if(data.code=="SUCCESS"){
+//                    var options = data.data;
+//                    for(var i = 0; i < options.length;i++){
+//                        var val = options[i];
+//                        $("#userSelect").append("<option userid='"+val.id+"' username='"+val.userName+"'>"+val.userName+"</option>");
+//                    }
+//                }
+//            }
+//        });
+//    }
 
-                if(data.code=="SUCCESS"){
-                    var options = data.data;
-                    for(var i = 0; i < options.length;i++){
-                        var val = options[i];
-                        $("#userSelect").append("<option userid='"+val.id+"' username='"+val.userName+"'>"+val.userName+"</option>");
-                    }
-                }
-            }
-        });
+    function initUserOption(){
+        for(var i = 0; i < myUsers.length;i++){
+            var val = myUsers[i];
+            $("#userSelect").append("<option userid='"+val.id+"' username='"+val.userName+"'>"+val.userName+"</option>");
+        }
     }
-    function loadRule(){
-        $.ajax({
-            type: "GET",
-            url: "../getRule",
-            dataType: "json",
-            success: function(data){
+//    function loadRule(){
+//        $.ajax({
+//            type: "GET",
+//            url: "../getRule",
+//            dataType: "json",
+//            success: function(data){
+//
+//                if(data.code=="SUCCESS"){
+//                    var options = data.data;
+//                    for(var i = 0; i < options.length;i++){
+//                        var val = options[i];
+//                        $("#ruleSelect").append("<option ruleid='"+val.ruleId+"' rulename='"+val.ruleName+"' value='"+val.ruleDesc+"'>"+val.ruleDesc+"</option>");
+//                    }
+//                }
+//            }
+//        });
+//    }
 
-                if(data.code=="SUCCESS"){
-                    var options = data.data;
-                    for(var i = 0; i < options.length;i++){
-                        var val = options[i];
-                        $("#ruleSelect").append("<option ruleid='"+val.ruleId+"' rulename='"+val.ruleName+"' value='"+val.ruleDesc+"'>"+val.ruleDesc+"</option>");
-                    }
-                }
-            }
-        });
+    function initRuleOption(){
+        for(var i = 0; i < myRules.length;i++){
+            var val = myRules[i];
+            $("#ruleSelect").append("<option ruleid='"+val.ruleId+"' rulename='"+val.ruleName+"' value='"+val.ruleDesc+"'>"+val.ruleDesc+"</option>");
+        }
     }
-
 </script>

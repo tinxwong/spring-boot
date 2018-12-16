@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Created by baibg1 on 2016-7-20.
+ * Created by tinx on 2018-7-20.
  */
 public final class DateUtil {
     public static final String DATE_PATTERN = "yyyy-MM-dd";
@@ -105,7 +105,7 @@ public final class DateUtil {
     /**
      * 
      * 创建时间 2018-8-9 14:09
-     * @author 陆国鸿
+     * @author tinx
      * @param needTime 是否需要时间部分
      * @return
      */
@@ -274,5 +274,63 @@ public final class DateUtil {
         }
 
         return result;
+    }
+
+    /**
+     * 获得指定日期的前一天
+     * @param specifiedDay
+     * @return
+     * @throws Exception
+     */
+    public static String getSpecifiedDayBefore(String specifiedDay){
+//SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        Date date=null;
+        try {
+            date = new SimpleDateFormat("yy-MM-dd").parse(specifiedDay);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        c.setTime(date);
+        int day=c.get(Calendar.DATE);
+        c.set(Calendar.DATE,day-1);
+
+        String dayBefore=new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
+        return dayBefore;
+    }
+    /**
+     * 获得指定日期的后一天
+     * @param specifiedDay
+     * @return
+     */
+    public static String getSpecifiedDayAfter(String specifiedDay){
+        Calendar c = Calendar.getInstance();
+        Date date=null;
+        try {
+            date = new SimpleDateFormat("yy-MM-dd").parse(specifiedDay);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        c.setTime(date);
+        int day=c.get(Calendar.DATE);
+        c.set(Calendar.DATE,day+1);
+
+        String dayAfter=new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
+        return dayAfter;
+    }
+
+    public static Date getSpecifiedDayAfter(Date specifiedDay){
+        Calendar c = Calendar.getInstance();
+//        Date date=null;
+//        try {
+//            date = new SimpleDateFormat("yy-MM-dd").parse(specifiedDay);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+        c.setTime(specifiedDay);
+        int day=c.get(Calendar.DATE);
+        c.set(Calendar.DATE,day+1);
+
+        return c.getTime();
     }
 }

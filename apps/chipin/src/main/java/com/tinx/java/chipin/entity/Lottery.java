@@ -92,7 +92,7 @@ public class Lottery extends ChipinEntity {
     @TableField("batch_bet_url")
     private String batchBetUrl;
 
-
+    private Integer visibility;
 
 
 }

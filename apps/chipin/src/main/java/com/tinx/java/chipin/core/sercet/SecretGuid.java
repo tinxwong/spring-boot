@@ -3,7 +3,10 @@ package com.tinx.java.chipin.core.sercet;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * @author tinx
@@ -19,9 +22,11 @@ public class SecretGuid {
         ScriptEngine engine = manager.getEngineByName("js");
         try {
             //获取当前类的所在目录的路径
-            String path = SecretGuid.class.getResource("").getPath();
+//            String path = SecretGuid.class.getResource("").getPath();
             // FileReader的参数为所要执行的js文件的路径
-            engine.eval(new FileReader(path + "SecretGuid.js"));
+            InputStream stream = SecretGuid.class.getClassLoader().getResourceAsStream("SecretGuid.js");
+            engine.eval(new BufferedReader(new InputStreamReader(stream, "UTF-8")));
+//            engine.eval(new FileReader(path + "SecretGuid.js"));
             if (engine instanceof Invocable) {
                 Invocable invocable = (Invocable) engine;
                 //从脚本引擎中返回一个给定接口的实现

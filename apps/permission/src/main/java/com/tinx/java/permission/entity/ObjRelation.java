@@ -22,27 +22,27 @@ public class ObjRelation implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 鍞竴鏍囪瘑
+     * 唯一标识
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
-     * 瀵硅薄ID
+     * 对象ID
      */
     @TableField("obj_id")
     private Long objId;
     /**
-     * 瀵硅薄绫诲瀷
+     * 对象类型
      */
     @TableField("obj_type")
     private String objType;
     /**
-     * 鍏宠仈ID
+     * 关联ID
      */
     @TableField("rel_id")
     private Long relId;
     /**
-     * 鍏宠仈绫诲瀷
+     * 关联类型
      */
     @TableField("rel_type")
     private String relType;

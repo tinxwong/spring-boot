@@ -4,10 +4,8 @@ import com.baomidou.mybatisplus.mapper.Condition;
 import com.tinx.java.chipin.core.Authent;
 import com.tinx.java.chipin.entity.ChipinLog;
 import com.tinx.java.chipin.entity.Lottery;
-import com.tinx.java.chipin.entity.Sysconfig;
 import com.tinx.java.chipin.entity.Task;
 import com.tinx.java.chipin.service.ChipinLogService;
-import com.tinx.java.chipin.service.SysconfigService;
 import com.tinx.java.chipin.service.TaskService;
 import com.tinx.java.chipin.utils.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -110,7 +108,18 @@ public class AccountChangeChipinRule extends AbstractChipinRule {
             e.printStackTrace();
         }
 
-        return new ChipinLog();
+        ChipinLog chipinLog = new ChipinLog();
+//        chipinLog.setBetsContent(betsContent);
+        chipinLog.setBetsSize(betsSize);
+        chipinLog.setTaskId(task.getId());
+        chipinLog.setUserName(task.getUserName());
+        chipinLog.setUserId(task.getUserId());
+        chipinLog.setBetMoney(task.getMoney().toString());
+        chipinLog.setPeriodNo(periodNo);
+        chipinLog.setResults(result);
+        chipinLog.setExecuteRuleName(getRuleName());
+        chipinLog.setAccountBalance(currAccount.toString());
+        return chipinLog;
     }
 
     @Override
