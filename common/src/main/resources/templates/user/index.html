@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>搜索页</title>
+    <!-- 此文件为了显示Demo样式，项目中不需要引入 -->
+    <link href="/assets/code/demo.css" rel="stylesheet">
+
+    <link href="/assets/css/dpl.css" rel="stylesheet">
+    <link href="/assets/css/bui.css" rel="stylesheet">
+
+</head>
+<body>
+<div class="demo-content">
+    <div class="row">
+        <div class="span24">
+            <form id="searchForm" class="form-horizontal" tabindex="0" style="outline: none;margin-top:20px;">
+                <div class="row" id="searchDiv">
+                    <div class="control-group span8">
+                        <label class="control-label">用户名：</label>
+                        <div class="controls">
+                            <input type="text" name="userName" class="control-text">
+                        </div>
+                    </div>
+                    <div class="form-actions span2">
+                        <button id="btnSearch" type="submit" class="button button-primary">搜索</button>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+    <div class="search-grid-container">
+        <div id="grid">
+        </div>
+        <!-- 初始隐藏 dialog内容 -->
+        <div id="content" class="hide">
+            <form class="form-horizontal" id="userForm">
+                <div class="row">
+                    <div class="control-group span8">
+                        <label class="control-label"><s>*</s>ID：</label>
+                        <div class="controls">
+                            <input id="userid" name="id" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="control-group span8">
+                        <label class="control-label"><s>*</s>用户名：</label>
+                        <div class="controls">
+                            <input id="userName" name="userName" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="control-group span8">
+                        <label class="control-label"><s>*</s>真实名 ：</label>
+                        <div class="controls">
+                            <input id="trueName" name="trueName" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="control-group span8">
+                        <label class="control-label"><s>*</s>密码 ：</label>
+                        <div class="controls">
+                            <input id="pwd" name="pwd" type="text" data-rules="{required:true}" class="input-normal control-text">
+                        </div>
+                    </div>
+                    <div class="control-group span8">
+                        <label class="control-label"><s>*</s>电话 ：</label>
+                        <div class="controls">
+                            <input id="phone" name="phone" type="text" data-rules="{required:true}" class="input-normal control-text">
+                        </div>
+                    </div>
+                    <div class="control-group span8">
+                        <label class="control-label"><s>*</s>性别 ：</label>
+                        <div class="controls">
+                            <input id="sexDesc" name="sexDesc" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="control-group span8">
+                        <label class="control-label"><s>*</s>角色名称 ：</label>
+                        <div class="controls">
+                            <input id="roleName" name="roleName" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <script src="/assets/js/jquery-1.8.1.min.js"></script>
+        <script src="/assets/js/bui-min.js"></script>
+        <script type="text/javascript" th:inline="javascript">
+            var myUrl = [[${urls}]];
+            var myButton = [[${buttons}]];
+            var Grid = BUI.Grid,
+                Store = BUI.Data.Store,
+                columns = [
+                    {title : 'ID',dataIndex :'id', width:50},
+                    {title : '用户名',dataIndex :'userName', width:100},
+                    {title : '真实名',dataIndex :'trueName', width:100},
+                    {title : '电话',dataIndex :'phone', width:90},
+                    {title : '性别',dataIndex :'sexDesc', width:50},
+                    {title : '角色名称',dataIndex :'roleDesc', width:100},
+                    {title : '创建人',dataIndex : 'createUser',width:60},
+                    {title : '创建时间',dataIndex : 'createTime',width:100},
+                    {title : '修改人',dataIndex : 'updateUser',width:60},
+                    {title : '修改时间',dataIndex : 'updateTime',width:100},
+                    {title : '操作',renderer : function(){
+                        return '<span class="grid-command btn-edit">编辑</span>&nbsp;<span class="grid-command btn-delete">删除</span>'
+                    }}
+                ];
+            initButton();
+
+            //监听表格行内编辑点击操作
+            var editing = new Grid.Plugins.DialogEditing({
+                contentId : 'content', //设置隐藏的Dialog内容
+                triggerCls : 'btn-edit', //触发显示Dialog的样式
+                editor : {
+                    title : '权限对象-编辑',
+                    width : '80%',
+                    success:function(){
+                        var edtor = this;
+//
+                        $.ajax({
+                            type: "POST",
+                            url: myUrl.edit,
+                            data:$("#userForm").serialize(),
+                            dataType: "json",
+                            success: function(data){
+                                if(data.code=="SUCCESS"){
+                                    store.load();
+                                }
+                                edtor.accept();
+                            }
+                        });
+                    }
+
+                },
+                autoSave : true //自动添加和更新
+            });
+            var store = new Store({
+                    url : myUrl.list,
+                    autoLoad:true,
+                    pageSize:10
+                }),
+                grid = new Grid.Grid({
+                    render:'#grid',
+                    loadMask: true,
+                    forceFit:true,
+                    columns : columns,
+                    store: store,
+                    plugins : [editing,Grid.Plugins.CheckSelection,Grid.Plugins.AutoFit,Grid.Plugins.ColumnResize], //勾选插件、自适应宽度插件
+                    // 底部工具栏
+
+                    // 顶部工具栏
+                    bbar : {
+                        //items 也可以在此配置
+                        // pagingBar:表明包含分页栏
+                        pagingBar:true
+                    }
+                });
+
+            grid.render();
+
+
+
+
+            //监听表格行内操作列的点击操作
+            grid.on('itemclick',function(ev){
+                var sender = $(ev.domTarget),
+                    itemEl = $(ev.element),
+                    item = ev.item;
+                if(sender.hasClass('btn-delete')){ //点击删除操作
+                    del(item);
+                }
+            });
+
+
+            //删除选中的记录
+            function del(item){
+                if(typeof(myUrl.rev)=="undefined"){
+                    BUI.Message.Alert('没有权限删除！','error');
+                    return;
+                }
+                BUI.Message.Confirm('确认删除ID['+item.id+']记录？',function(){
+                    $.ajax({
+                        type: "POST",
+                        url: myUrl.rev,
+                        data: {id:item.id},
+                        dataType: "json",
+                        success: function(data){
+                            if(data.code=="SUCCESS"){
+//                                store.remove(item);
+                                store.load();
+                            }
+                        }
+                    });
+                },'question');
+            }
+
+            //创建表单，表单中的日历，不需要单独初始化
+            var form = new BUI.Form.HForm({
+                srcNode : '#searchForm'
+            }).render();
+
+            form.on('beforesubmit',function(ev) {
+                //序列化成对象
+                var obj = form.serializeToObject();
+                obj.start = 0; //返回第一页
+                store.load(obj);
+                return false;
+            });
+
+            function initButton(){
+                for(var i = 0; i < myButton.length;i++) {
+                    var html = "<button type=\"button\" class=\"button " + myButton[i].cssName + "\" id=\"" + myButton[i].instruction + "\" url='" + myButton[i].url + "'>" + myButton[i].showName + "</button>&nbsp;&nbsp;";
+                    $("#searchDiv").append(html);
+                }
+            }
+
+            //监听添加按钮
+            $('#add').click(function(){
+                var url = $(this).attr("url");
+
+                if(typeof(url)=="undefined"){
+                    BUI.Message.Alert('没有权限添加！','error');
+                    return;
+                }
+                window.location.href=url;
+            });
+
+            $('#indexRecycle').click(function(){
+                var url = $(this).attr("url");
+                if(typeof(url)=="undefined"){
+                    BUI.Message.Alert('没有权限！','error');
+                    return;
+                }
+                window.location.href=url;
+            });
+
+            //监听批量删除按钮
+            $("#batchRev").click(function(){
+                var url = $(this).attr("url");
+                if(typeof(url)=="undefined"){
+                    BUI.Message.Alert('没有权限删除！','error');
+                    return;
+                }
+                var ids = "";
+                var selections = grid.getSelection();
+                if(selections.length==0){
+                    BUI.Message.Alert('请选择要删除的信息！','warning');
+                    return false;
+                }
+                for(var i = 0; i< selections.length;i++){
+                    if(i<selections.length-1){
+                        ids+=selections[i].id+",";
+                    }else{
+                        ids+=selections[i].id;
+                    }
+                }
+                BUI.Message.Confirm('确认批量删除['+ids+']记录？',function(){
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: {ids:ids},
+                        dataType: "json",
+                        success: function(data){
+                            if(data.code=="SUCCESS"){
+//                                store.remove(selections);
+                                store.load();
+                            }
+                        }
+                    });
+                });
+                return false;
+            });
+
+        </script>
+        <!-- script end -->
+    </div>
+</body>
+</html>
