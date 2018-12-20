@@ -54,6 +54,7 @@ public class AccountChangeChipinRule extends AbstractChipinRule {
     }
 
     public ChipinLog execute(Authent authent) {
+        Task task = authent.getTask();
         String  account_Key = String.format("%s_%s_%s_%s_%s_ACCOUNT",task.getId(),userLottery.getUserId(),lottery.getId(),userLottery.getLoginUser(),userLottery.getLoginPwd());
         String counter_key = String.format("%s_%s_%s_%s_%s_COUNTER",task.getId(),userLottery.getUserId(),lottery.getId(),userLottery.getLoginUser(),userLottery.getLoginPwd());
         String result = "";

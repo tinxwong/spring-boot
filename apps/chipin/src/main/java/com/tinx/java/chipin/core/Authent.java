@@ -42,4 +42,8 @@ public interface Authent {
     public void setRootUrl(String url);
 
     public void init(Task task, Lottery lottery, UserLottery userLottery);
+
+    public void setTask(Task task);
+
+    public Task getTask();
 }

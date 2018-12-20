@@ -60,7 +60,7 @@ public class ChipinLogServiceImpl extends ServiceImpl<ChipinLogDao, ChipinLog> i
         if(StringUtils.isNotEmpty(query.getCreateTime())){
             wrapper.between("create_time",query.getCreateTime(), DateUtil.getSpecifiedDayAfter(query.getCreateTime()));
         }
-
+        wrapper.orderBy("create_time desc");
         Page<ChipinLog> pageList = selectPage(pagePlus.getPagePlus(),wrapper);
         List<ChipinLog> chipinLogs = pageList.getRecords();
         List<ChipinLogVo> chipinLogVos = BeanConverter.copy(chipinLogs,ChipinLogVo.class);

@@ -227,4 +227,12 @@ public abstract class DefaultAuthent implements Authent{
         getTaskService().updateById(task1);
 
     }
+
+    public void setTask(Task task){
+        this.task = task;
+    }
+
+    public Task getTask(){
+        return task;
+    }
 }

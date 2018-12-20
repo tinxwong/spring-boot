@@ -71,8 +71,13 @@ public class TaskExecutorService {
         Task task = taskService.selectOne(wrapper);
         if(task!=null){
             try{
+                //停止线程
                 ChipinTaskJob chipinTaskJob = (ChipinTaskJob)MapUtils.get("THREAD_"+id);
                 chipinTaskJob.setSignal(false);
+                //删除cookie
+                Lottery lottery = lotteryService.selectById(task.getLotteryId());
+                UserLottery userLottery = userLotteryService.selectByParam(task.getUserId(),task.getLotteryId());
+                MapUtils.remove(String.format("%s_%s_%s_COOKIE",lottery.getId(),userLottery.getLoginUser(),userLottery.getLoginPwd()));
             }catch (Exception e){
                 logger.error(e.getMessage());
             }

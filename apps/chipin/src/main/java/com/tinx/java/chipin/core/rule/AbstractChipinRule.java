@@ -64,6 +64,7 @@ public abstract class AbstractChipinRule implements ChipinRule {
 
     public abstract TaskService getTaskService();
 
+
     public String rootUrl;
 
 //    public CookieStore cookieStore;
@@ -191,11 +192,20 @@ public abstract class AbstractChipinRule implements ChipinRule {
     }
 
     protected String getBetsContent(Task task,Lottery lottery){
-        if(StringUtils.isEmpty(betsContent)){
-            String result = uploadBetNos();
-            betsContent = generateBets(result,task.getMoney());
+        String content = "";
+        Task tempTask = getTaskService().selectById(task.getId());
+        String result = uploadBetNos();
+        logger.info("上传下注文件结果:"+result);
+        String jsonContent = result.split("</script>")[1];
+        int status = JSONObject.fromObject(jsonContent).getInt("Status");
+        if(status==2){
+            throw new RuntimeException(result);
         }
-        return betsContent;
+        if(status==1){
+            content = generateBets(result,tempTask.getMoney());
+        }
+
+        return content;
     }
 
     protected String generateBets(String content, BigDecimal money){
@@ -226,9 +236,15 @@ public abstract class AbstractChipinRule implements ChipinRule {
         String guid = SecretGuid.getGuid();
         String rootUrl = getRootUrl();
         List<NameValuePair> params = new ArrayList<>();
-        getBetsContent(task,lottery);
+        String content = "";
+        try{
+            content = getBetsContent(task,lottery);
+        }catch(RuntimeException e){
+            return e.getMessage();
+        }
+
         //params.add(new BasicNameValuePair("bets", "[{\"dict_no_type_id\":\"11\",\"bet_no\":\"1234\",\"bet_money\":\"1\"},{\"dict_no_type_id\":\"7\",\"bet_no\":\"123X\",\"bet_money\":\"1\"},{\"dict_no_type_id\":\"3\",\"bet_no\":\"4XX5\",\"bet_money\":\"1\"},{\"dict_no_type_id\":\"16\",\"bet_no\":\"5XXX5\",\"bet_money\":\"1\"},{\"dict_no_type_id\":\"15\",\"bet_no\":\"XXX12\",\"bet_money\":\"1\"},{\"dict_no_type_id\":\"18\",\"bet_no\":\"XX1X2\",\"bet_money\":\"1\"},{\"dict_no_type_id\":\"17\",\"bet_no\":\"X1XX2\",\"bet_money\":\"1\"},{\"dict_no_type_id\":\"2\",\"bet_no\":\"1X1X\",\"bet_money\":\"1\"},{\"dict_no_type_id\":\"1\",\"bet_no\":\"11XX\",\"bet_money\":\"1\"}]"));
-        params.add(new BasicNameValuePair("bets",betsContent));
+        params.add(new BasicNameValuePair("bets",content));
         params.add(new BasicNameValuePair("way", "103"));
         params.add(new BasicNameValuePair("guid", guid));
         params.add(new BasicNameValuePair("is_package", "0"));
@@ -278,7 +294,7 @@ public abstract class AbstractChipinRule implements ChipinRule {
                 result = "下注成功";
 
             }else{
-                result = "下注失败!";
+                result = "下注失败!"+retStr;
             }
             // 释放资源
             closeableHttpClient.close();

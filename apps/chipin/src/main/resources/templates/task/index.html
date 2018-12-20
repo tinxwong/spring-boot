@@ -269,6 +269,7 @@
                         data: {id:item.id},
                         dataType: "json",
                         success: function(data){
+//                            store.load();
                             $(sender).hide();
                             $(sender).parent().find(".btn-stop").show();
                         }
@@ -285,8 +286,9 @@
                         data: {id:item.id},
                         dataType: "json",
                         success: function(data){
-                            $(sender).hide();
-                            $(sender).parent().find(".btn-run").show();
+                            store.load();
+//                            $(sender).hide();
+//                            $(sender).parent().find(".btn-run").show();
                         }
                     });
                 },'question');

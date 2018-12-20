@@ -71,6 +71,7 @@ public class PeriodNumberChipinRule extends AbstractChipinRule {
     @Override
     public ChipinLog execute(Authent authent) {
         logger.info("Name=PeriodNumberChipinRule,Desc={},time={}",getRuleDesc(), DateUtil.format(new Date(),DateUtil.TIMESTAMP_PATTERN));
+        Task task = authent.getTask();
         BigDecimal accountMax = task.getAccountMaxLimit();
         BigDecimal accountMin = task.getAccountMinLimit();
         String balance = getAccount();

@@ -7,6 +7,7 @@ import com.tinx.java.chipin.entity.Lottery;
 import com.tinx.java.chipin.entity.Task;
 import com.tinx.java.chipin.service.ChipinLogService;
 import com.tinx.java.chipin.service.TaskService;
+import com.tinx.java.chipin.utils.FileUtils;
 import com.tinx.java.chipin.utils.MapUtils;
 import com.tinx.java.chipin.utils.RandomUtils;
 import com.tinx.java.common.utils.DateUtil;
@@ -80,6 +81,11 @@ public class DefaultChipinRule extends AbstractChipinRule {
 
 
     public ChipinLog execute(Authent authent){
+//        Task task = authent.getTask();
+//        String content = FileUtils.readFromFile(task.getChipinFilePath());
+//        if(!content.equals(betsContent)){
+//            betsContent = "";
+//        }
         logger.info("Name=DefaultChipinRule,Desc={},time={}",getRuleDesc(), DateUtil.format(new Date(),DateUtil.TIMESTAMP_PATTERN));
         BigDecimal accountMax = task.getAccountMaxLimit();
         BigDecimal accountMin = task.getAccountMinLimit();

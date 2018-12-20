@@ -21,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import java.math.BigDecimal;
 import org.apache.http.client.CookieStore;
 
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -78,7 +79,7 @@ public class ChipinTaskJob implements Callable{
             authent.initCookieStore(false);
             authent.simulateAgreement();
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
             return null;
         }
 
@@ -90,9 +91,10 @@ public class ChipinTaskJob implements Callable{
         chipinRule.init(task,lottery,userLottery);
         chipinRule.setRootUrl(rootUrl);
         while(isSignal()) {
-            ChipinLog chipinLog = chipinRule.execute(authent);
             TaskService taskService = (TaskService)SpringContextUtils.getBean("taskServiceImpl");
             Task tempTask = taskService.selectById(task.getId());
+//            authent.setTask(tempTask);
+            ChipinLog chipinLog = chipinRule.execute(authent);
             if(tempTask.getStatus().intValue()==TaskStatusEnum.STOP.getCode()){
                 setSignal(false);
             }else{
@@ -106,16 +108,14 @@ public class ChipinTaskJob implements Callable{
                     chipinLog.setChipinTimeScope(map.toString());
                     chipinLog.setNextChipinTime(nextTime);
                     ChipinLogService chipinLogService = (ChipinLogService)SpringContextUtils.getBean("chipinLogServiceImpl");
-                    chipinLogService.insert(chipinLog);
+                    try{
+                        chipinLogService.insert(chipinLog);
+                    }catch (Exception e){
+                        logger.error(e.getMessage());
+                    }
+
                     Thread.sleep(selectTime);
-//                    Map<String,String> map = TimestampUtils.getChipinTimeScope();
-//                    long chipipTime = TimestampUtils.getNextChipinTime(map);
-//                    logger.info("睡眠时间长度={},下次执行时间={}",chipipTime,TimestampUtils.transForDate(chipipTime));
-//                    chipinLog.setChipinTimeScope(map.toString());
-//                    chipinLog.setNextChipinTime(TimestampUtils.transForDate(chipipTime));
-//                    ChipinLogService chipinLogService = (ChipinLogService)SpringContextUtils.getBean("chipinLogServiceImpl");
-//                    chipinLogService.insert(chipinLog);
-//                    Thread.sleep(chipipTime);
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
