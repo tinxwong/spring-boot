@@ -33,18 +33,8 @@ CREATE TABLE `chipin_config` (
   `update_time` timestamp NULL DEFAULT NULL,
   `visibility` tinyint(4) DEFAULT '1' COMMENT '删除标记',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `chipin_config`
---
-
-LOCK TABLES `chipin_config` WRITE;
-/*!40000 ALTER TABLE `chipin_config` DISABLE KEYS */;
-INSERT INTO `chipin_config` VALUES (1,'LOTTERY','KEY','asdWE3ac',NULL,'2018-08-10 22:29:27',NULL,'2018-08-10 22:29:27',1),(3,'LOTTERY','JINJIU','http://k1.cq6055.xyz,http://k2.cq6055.xyz,http://k3.cq6055.xyz,http://k4.cq6055.xyz,http://k5.cq6055.xyz,http://k6.cq6055.xyz,http://k7.cq6055.xyz,http://k8.cq6055.xyz',NULL,'2018-08-30 22:10:28',NULL,'2018-08-30 22:10:28',1),(4,'TEMP','LOTTERY','D:\\temp',NULL,'2018-10-14 20:51:09',NULL,NULL,1);
-/*!40000 ALTER TABLE `chipin_config` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `chipin_log`
@@ -72,19 +62,14 @@ CREATE TABLE `chipin_log` (
   `results` varchar(255) DEFAULT '' COMMENT '结果',
   `account_balance` varchar(50) DEFAULT '' COMMENT '账户余额',
   `execute_rule_name` varchar(50) DEFAULT '' COMMENT '执行规则名称',
+  `bets_content` tinyint(4) DEFAULT NULL COMMENT '投注内容',
+  `bets_size` tinyint(4) DEFAULT NULL COMMENT '投注长度',
+  `chipin_time_scope` varchar(100) DEFAULT '' COMMENT '时间范围',
+  `next_chipin_time` varchar(100) DEFAULT '' COMMENT '下次投注时间',
+  `visibility` tinyint(4) DEFAULT '1' COMMENT '是否可用',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `chipin_log`
---
-
-LOCK TABLES `chipin_log` WRITE;
-/*!40000 ALTER TABLE `chipin_log` DISABLE KEYS */;
-INSERT INTO `chipin_log` VALUES (1,2,'天蓬元帅',NULL,NULL,4,NULL,'1',NULL,'0',NULL,'2018-10-19 22:54:44',NULL,NULL,NULL,'执行下注功能','500',''),(2,2,'天蓬元帅',NULL,NULL,4,NULL,'1',NULL,'0',NULL,'2018-10-19 23:04:45',NULL,NULL,NULL,'下注号码匹配了开奖号码，取消执行下注功能','500',''),(3,2,'天蓬元帅',NULL,NULL,4,NULL,'1',NULL,'0',NULL,'2018-10-19 23:14:46',NULL,NULL,NULL,'下注号码匹配了开奖号码，取消执行下注功能','500',''),(4,2,'天蓬元帅',NULL,NULL,4,NULL,'1',NULL,'0',NULL,'2018-10-19 23:24:47',NULL,NULL,NULL,'下注号码匹配了开奖号码，取消执行下注功能','500',''),(5,2,'天蓬元帅',NULL,NULL,4,NULL,'1',NULL,'0',NULL,'2018-10-19 23:34:48',NULL,NULL,NULL,'下注号码匹配了开奖号码，取消执行下注功能','500',''),(6,2,'天蓬元帅',NULL,NULL,4,NULL,'1',NULL,'0',NULL,'2018-10-19 23:44:49',NULL,NULL,NULL,'下注号码匹配了开奖号码，取消执行下注功能','500',''),(7,2,'天蓬元帅',NULL,NULL,4,NULL,'1',NULL,'0',NULL,'2018-10-19 23:54:50',NULL,NULL,NULL,'下注号码匹配了开奖号码，取消执行下注功能','500',''),(8,2,'天蓬元帅',NULL,NULL,4,NULL,'1',NULL,'0',NULL,'2018-10-20 00:04:50',NULL,NULL,NULL,'下注号码匹配了开奖号码，取消执行下注功能','500',''),(9,2,'天蓬元帅',NULL,NULL,4,NULL,'1',NULL,'0',NULL,'2018-10-20 00:14:51',NULL,NULL,NULL,'执行下注功能','500',''),(10,4,'kai',NULL,NULL,6,NULL,'0.10',NULL,'0','20181021078','2018-10-20 18:56:53',NULL,NULL,NULL,'{\"Status\":5,\"Data\":\"请登录。\"}','2991',''),(11,4,'kai',NULL,NULL,6,NULL,'0.10',NULL,'0','20181021080','2018-10-20 19:12:54',NULL,NULL,NULL,'{\"Status\":2,\"Data\":\"请至少选择一个号码！\"}','2991',''),(12,4,'kai',NULL,NULL,6,NULL,'0.10',NULL,'0','20181021080','2018-10-20 19:16:31',NULL,NULL,NULL,'{\"Status\":2,\"Data\":\"请至少选择一个号码！\"}','2991',''),(13,4,'kai',NULL,NULL,6,'[{\"bet_no\":\"0013\",\"bet_money\":\"1\",\"dict_no_type_id\":11},{\"bet_no\":\"0014\",\"bet_money\":\"1\",\"dict_no_type_id\":11},{\"bet_no\":\"0015\",\"bet_money\":\"1\",\"dict_no_type_id\":11}]','0.10',NULL,'3','20181021080','2018-10-20 19:19:02',NULL,NULL,NULL,'{\"Status\":1,\"Data\":{\"CompletedStatus\":1,\"LackStatus\":0,\"FinalBetCount\":3,\"FinalMoney\":3.00000}}','2991',''),(14,4,'kai',NULL,NULL,6,'[{\"bet_no\":\"0013\",\"bet_money\":\"1\",\"dict_no_type_id\":11},{\"bet_no\":\"0014\",\"bet_money\":\"1\",\"dict_no_type_id\":11},{\"bet_no\":\"0015\",\"bet_money\":\"1\",\"dict_no_type_id\":11}]','0.10',NULL,'3','20181021081','2018-10-20 19:25:18',NULL,NULL,NULL,'{\"Status\":1,\"Data\":{\"CompletedStatus\":1,\"LackStatus\":0,\"FinalBetCount\":3,\"FinalMoney\":3.00000}}','2988',''),(15,4,'kai',NULL,NULL,6,'[{\"bet_no\":\"0013\",\"bet_money\":\"1\",\"dict_no_type_id\":11},{\"bet_no\":\"0014\",\"bet_money\":\"1\",\"dict_no_type_id\":11},{\"bet_no\":\"0015\",\"bet_money\":\"1\",\"dict_no_type_id\":11}]','0.10',NULL,'3','20181021083','2018-10-20 19:42:48',NULL,NULL,NULL,'{\"Status\":1,\"Data\":{\"CompletedStatus\":1,\"LackStatus\":0,\"FinalBetCount\":3,\"FinalMoney\":3.00000}}','2985',''),(16,4,'kai',NULL,NULL,6,'[{\"bet_no\":\"0013\",\"bet_money\":\"1\",\"dict_no_type_id\":11},{\"bet_no\":\"0014\",\"bet_money\":\"1\",\"dict_no_type_id\":11},{\"bet_no\":\"0015\",\"bet_money\":\"1\",\"dict_no_type_id\":11}]','0.10',NULL,'3','20181021085','2018-10-20 20:00:08',NULL,NULL,NULL,'{\"Status\":1,\"Data\":{\"CompletedStatus\":1,\"LackStatus\":0,\"FinalBetCount\":3,\"FinalMoney\":3.00000}}','2982',''),(17,4,'kai',NULL,NULL,6,'[{\"bet_no\":\"0013\",\"bet_money\":\"1\",\"dict_no_type_id\":11},{\"bet_no\":\"0014\",\"bet_money\":\"1\",\"dict_no_type_id\":11},{\"bet_no\":\"0015\",\"bet_money\":\"1\",\"dict_no_type_id\":11}]','0.10',NULL,'3','20181021086','2018-10-20 20:17:27',NULL,NULL,NULL,'{\"Status\":1,\"Data\":{\"CompletedStatus\":1,\"LackStatus\":0,\"FinalBetCount\":3,\"FinalMoney\":3.00000}}','2979',''),(18,4,'kai',NULL,NULL,6,'[{\"bet_no\":\"0013\",\"bet_money\":\"1\",\"dict_no_type_id\":11},{\"bet_no\":\"0014\",\"bet_money\":\"1\",\"dict_no_type_id\":11},{\"bet_no\":\"0015\",\"bet_money\":\"1\",\"dict_no_type_id\":11}]','0.10',NULL,'3','20181021088','2018-10-20 20:32:12',NULL,NULL,NULL,'{\"Status\":1,\"Data\":{\"CompletedStatus\":1,\"LackStatus\":0,\"FinalBetCount\":3,\"FinalMoney\":3.00000}}','2973',''),(19,4,'kai',NULL,NULL,6,'[{\"bet_no\":\"0013\",\"bet_money\":\"1\",\"dict_no_type_id\":11},{\"bet_no\":\"0014\",\"bet_money\":\"1\",\"dict_no_type_id\":11},{\"bet_no\":\"0015\",\"bet_money\":\"1\",\"dict_no_type_id\":11}]','0.10',NULL,'3','20181021089','2018-10-20 20:46:45',NULL,NULL,NULL,'{\"Status\":1,\"Data\":{\"CompletedStatus\":1,\"LackStatus\":0,\"FinalBetCount\":3,\"FinalMoney\":3.00000}}','2970',''),(20,4,'kai',NULL,NULL,6,'[{\"bet_no\":\"0013\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11},{\"bet_no\":\"0014\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11},{\"bet_no\":\"0015\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11}]','0.10',NULL,'3','20181021090','2018-10-20 20:51:26',NULL,NULL,NULL,'{\"Status\":1,\"Data\":{\"CompletedStatus\":1,\"LackStatus\":0,\"FinalBetCount\":3,\"FinalMoney\":0.3000000}}','2967',''),(21,4,'kai',NULL,NULL,6,'[{\"bet_no\":\"0013\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11},{\"bet_no\":\"0014\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11},{\"bet_no\":\"0015\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11}]','0.10',NULL,'3',NULL,'2018-10-20 21:08:59',NULL,NULL,NULL,'{\"Status\":2,\"Data\":\"期数不能为空！\"}','2966.7',''),(22,4,'kai',NULL,NULL,6,'[{\"bet_no\":\"0013\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11},{\"bet_no\":\"0014\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11},{\"bet_no\":\"0015\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11}]','0.10',NULL,'3','20181021093','2018-10-20 21:27:43',NULL,NULL,NULL,'{\"Status\":1,\"Data\":{\"CompletedStatus\":1,\"LackStatus\":0,\"FinalBetCount\":3,\"FinalMoney\":0.3000000}}','2966.7',''),(23,4,'kai',NULL,NULL,6,'[{\"bet_no\":\"0013\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11},{\"bet_no\":\"0014\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11},{\"bet_no\":\"0015\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11}]','0.10',NULL,'3','20181021094','2018-10-20 21:38:17',NULL,NULL,NULL,'{\"Status\":1,\"Data\":{\"CompletedStatus\":1,\"LackStatus\":0,\"FinalBetCount\":3,\"FinalMoney\":0.3000000}}','2966.4',''),(24,4,'kai',NULL,NULL,6,'[{\"bet_no\":\"0013\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11},{\"bet_no\":\"0014\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11},{\"bet_no\":\"0015\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11}]','0.10',NULL,'3','20181021095','2018-10-20 21:48:18',NULL,NULL,NULL,'{\"Status\":1,\"Data\":{\"CompletedStatus\":1,\"LackStatus\":0,\"FinalBetCount\":3,\"FinalMoney\":0.3000000}}','2966.1',''),(25,4,'kai',NULL,NULL,6,'[{\"bet_no\":\"0013\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11},{\"bet_no\":\"0014\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11},{\"bet_no\":\"0015\",\"bet_money\":\"0.10\",\"dict_no_type_id\":11}]','0.10',NULL,'3','20181021096','2018-10-20 21:58:20',NULL,NULL,NULL,'{\"Status\":1,\"Data\":{\"CompletedStatus\":1,\"LackStatus\":0,\"FinalBetCount\":3,\"FinalMoney\":0.3000000}}','2965.8','');
-/*!40000 ALTER TABLE `chipin_log` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `lottery`
@@ -114,18 +99,24 @@ CREATE TABLE `lottery` (
   `batch_bet_url` varchar(128) DEFAULT '' COMMENT '批量下注链接',
   `upload_bet_nos_url` varchar(128) DEFAULT '' COMMENT '文件上传链接',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `lottery`
+-- Table structure for table `migration`
 --
 
-LOCK TABLES `lottery` WRITE;
-/*!40000 ALTER TABLE `lottery` DISABLE KEYS */;
-INSERT INTO `lottery` VALUES (1,'/Member/DoLogin?_=','/Member/DoLogin?_=','/drawno/GetCurrentPeriodStatus?_=','/Member/GetMemberPrint?_=','金玖网站','金玖投注网站','2018-08-31 22:51:53','admin',NULL,'2018-12-06 08:39:11',1,'/Member/AcceptAgreement?_=','/drawno/GetCurrentPeriodStatus?_=','/DrawNo/GetDrawNoTable?pageindex=1&_=','http://k1.cq6055.xyz,http://k2.cq6055.xyz,http://k3.cq6055.xyz,http://k4.cq6055.xyz,http://k5.cq6055.xyz,http://k6.cq6055.xyz,http://k7.cq6055.xyz,http://k8.cq6055.xyz','jinJiuAuthent','/Member/BatchBet','/Member/UpLoadBetNos'),(2,'/Member/DoLogin?_=','/Member/DoLogin?_=','/drawno/GetCurrentPeriodStatus?_=','/Member/GetMemberPrint?_=','六六六网站','六六六投注网站','2018-10-08 22:34:47','admin',NULL,'2018-10-20 16:21:35',1,'/Member/AcceptAgreement?_=','/drawno/GetCurrentPeriodStatus?_=','/DrawNo/GetDrawNoTable?pageindex=1&_=','http://k1.cq718718.xyz,http://k2.cq718718.xyz,http://k3.cq718718.xyz,http://k4.cq718718.xyz,http://k5.cq718718.xyz,http://k6.cq718718.xyz,http://k7.cq718718.xyz,http://k8.cq718718.xyz','liuLiuLiuAuthent','/Member/BatchBet','/Member/UpLoadBetNos'),(7,'CCC','DDD','EEE','FFF','AAA','BBB','2018-12-06 08:29:39','admin',NULL,'2018-12-06 10:17:54',0,'GGG','HHH',NULL,'KKK','liuLiuLiuAuthent','LLL','JJJ');
-/*!40000 ALTER TABLE `lottery` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `migration`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `migration` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '唯一标识',
+  `file_name` varchar(255) DEFAULT NULL COMMENT '文件名称',
+  `file_mdkey` varchar(255) DEFAULT NULL COMMENT '文件key',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `task`
@@ -158,18 +149,8 @@ CREATE TABLE `task` (
   `period_num` tinyint(4) DEFAULT '0' COMMENT '期数数量',
   `interval_periods` tinyint(4) DEFAULT '0' COMMENT '间隔期数',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='投注任务';
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='投注任务';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `task`
---
-
-LOCK TABLES `task` WRITE;
-/*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES (5,1,1,800,400,10,1.00,'2018-10-19 15:19:30',NULL,NULL,'2018-10-16 23:38:40',1,0,'D:\\temp/1/5/1/151.txt','3','','往期号码规则','periodNumberChipinRule','齐天大圣','金玖网站',0,0),(6,2,2,3600,10,10,0.10,'2018-11-09 19:23:59',NULL,NULL,'2018-10-20 21:38:16',1,0,'D:\\temp/2/6/4/264.txt','1','','默认规则','defaultChipinRule','kai','六六六网站',0,0),(7,3,1,400,100,NULL,1.00,'2018-12-05 15:12:13',NULL,NULL,'2018-12-05 15:12:13',0,0,'D:\\temp/1/7/3/173.txt','1','','默认规则','defaultChipinRule','zhangshan','金玖网站',0,0);
-/*!40000 ALTER TABLE `task` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `user`
@@ -198,16 +179,6 @@ CREATE TABLE `user` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user`
---
-
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'齐天大圣','王某','e10adc3949ba59abbe56e057f20f883e','13503098948','1','COMMON','2018-10-13 23:29:26',NULL,NULL,'2018-08-31 23:16:25',1,2),(2,'天蓬元帅','猪八戒','e10adc3949ba59abbe56e057f20f883e','','1','COMMON','2018-10-13 23:29:26',NULL,NULL,'2018-10-13 22:55:50',1,2),(3,'admin','管理员','e10adc3949ba59abbe56e057f20f883e','','1','ADMIN','2018-10-13 23:42:03',NULL,NULL,'2018-10-13 23:21:16',1,1),(4,'kai','恺','e10adc3949ba59abbe56e057f20f883e','','1','COMMON','2018-10-20 16:25:37',NULL,NULL,'2018-10-20 16:25:02',1,2);
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `user_lottery`
 --
 
@@ -228,18 +199,8 @@ CREATE TABLE `user_lottery` (
   `lottery_name` varchar(64) DEFAULT '' COMMENT '网站名',
   `visibility` tinyint(4) DEFAULT '1' COMMENT '是否删除',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user_lottery`
---
-
-LOCK TABLES `user_lottery` WRITE;
-/*!40000 ALTER TABLE `user_lottery` DISABLE KEYS */;
-INSERT INTO `user_lottery` VALUES (4,2,2,'yy0055','aaa11111','2018-12-06 07:12:15','admin','admin',NULL,'kai','六六六网站',1);
-/*!40000 ALTER TABLE `user_lottery` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `user_lottery_rule`
@@ -264,15 +225,6 @@ CREATE TABLE `user_lottery_rule` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user_lottery_rule`
---
-
-LOCK TABLES `user_lottery_rule` WRITE;
-/*!40000 ALTER TABLE `user_lottery_rule` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_lottery_rule` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -283,4 +235,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-12-08 20:57:51
+-- Dump completed on 2018-12-20 15:45:32
