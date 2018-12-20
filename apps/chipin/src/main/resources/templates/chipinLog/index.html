@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>搜索页</title>
+    <!-- 此文件为了显示Demo样式，项目中不需要引入 -->
+    <link href="/assets/code/demo.css" rel="stylesheet">
+
+    <link href="/assets/css/dpl.css" rel="stylesheet">
+    <link href="/assets/css/bui.css" rel="stylesheet">
+
+</head>
+<body>
+<div class="demo-content">
+    <div class="row">
+        <div class="span30">
+            <form id="searchForm" class="form-horizontal" tabindex="0" style="outline: none;margin-top:20px;">
+                <div class="row" id="searchDiv">
+                    <div class="control-group span8">
+                        <label class="control-label">用户名：</label>
+                        <div class="controls">
+                            <input type="text" name="userName" class="control-text">
+                        </div>
+                    </div>
+                    <div class="control-group span8">
+                        <label class="control-label">任务ID：</label>
+                        <div class="controls">
+                            <input type="text" name="taskId" class="control-text">
+                        </div>
+                    </div>
+                    <div class="control-group span8">
+                        <label class="control-label">下注时间：</label>
+                        <div class="controls">
+                            <input type="text" class="calendar" name="createTime"/>
+                        </div>
+                    </div>
+                    <div class="form-actions span2">
+                        <button id="btnSearch" type="submit" class="button button-primary">搜索</button>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+    <div class="search-grid-container">
+        <div id="grid">
+        </div>
+        <!-- 初始隐藏 dialog内容 -->
+        <div id="content" class="hide">
+            <form class="form-horizontal" id="chipinLogForm">
+                <div class="row">
+                    <div class="control-group span10">
+                        <label class="control-label"><s>*</s>ID：</label>
+                        <div class="controls">
+                            <input id="lotteryid" name="id" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+
+                    <div class="control-group span10">
+                        <label class="control-label">用户ID：</label>
+                        <div class="controls">
+                            <input id="userId" name="userId" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="control-group span10">
+                        <label class="control-label">用户名：</label>
+                        <div class="controls">
+                            <input id="userName" name="userName" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="control-group span10">
+                        <label class="control-label">投注用户ID：</label>
+                        <div class="controls">
+                            <input id="lotteryUserId" name="lotteryUserId" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="control-group span10">
+                        <label class="control-label">投注用户名：</label>
+                        <div class="controls">
+                            <input id="lotteryUserName" name="lotteryUserName" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="control-group span10">
+                        <label class="control-label">任务ID：</label>
+                        <div class="controls">
+                            <input id="taskId" name="taskId" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="control-group span10" style="height:150px;">
+                        <label class="control-label">投注内容：</label>
+                        <div class="controls">
+                            <textarea id="bets" name="bets" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly" style="height:140px;"></textarea>
+                        </div>
+                    </div>
+                    <div class="control-group span10" style="height:150px;">
+                        <label class="control-label">结果：</label>
+                        <div class="controls">
+                            <textarea id="results" name="results" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly" style="height:140px;"></textarea>
+                        </div>
+                    </div>
+                    <div class="control-group span10">
+                        <label class="control-label">实际投注内容：</label>
+                        <div class="controls">
+                            <input id="betsContent" name="betsContent" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="control-group span10">
+                        <label class="control-label">实际投注长度：</label>
+                        <div class="controls">
+                            <input id="betsSize" name="betsSize" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="control-group span10">
+                        <label class="control-label">单注金额：</label>
+                        <div class="controls">
+                            <input id="betMoney" name="betMoney" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="control-group span10">
+                        <label class="control-label">全部金额：</label>
+                        <div class="controls">
+                            <input id="totalBetMoney" name="totalBetMoney" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="control-group span10">
+                        <label class="control-label">投注码数量：</label>
+                        <div class="controls">
+                            <input id="betCount" name="betCount" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="control-group span10">
+                        <label class="control-label">期数：</label>
+                        <div class="controls">
+                            <input id="periodNo" name="periodNo" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+
+                    <div class="control-group span10">
+                        <label class="control-label">投注时间范围：</label>
+                        <div class="controls">
+                            <input id="chipinTimeScope" name="chipinTimeScope" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="control-group span10">
+                        <label class="control-label">下次投注时间：</label>
+                        <div class="controls">
+                            <input id="nextChipinTime" name="nextChipinTime" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="control-group span10">
+                        <label class="control-label">账户余额：</label>
+                        <div class="controls">
+                            <input id="accountBalance" name="accountBalance" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="control-group span10">
+                        <label class="control-label">执行规则名称：</label>
+                        <div class="controls">
+                            <input id="executeRuleName" name="executeRuleName" type="text" data-rules="{required:true}" class="input-normal control-text" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <script src="/assets/js/jquery-1.8.1.min.js"></script>
+        <script src="/assets/js/bui-min.js"></script>
+        <script type="text/javascript" th:inline="javascript">
+            var myUrl = [[${urls}]];
+            var myButton = [[${buttons}]];
+            var Grid = BUI.Grid,
+                Store = BUI.Data.Store,
+                columns = [
+                    {title : 'ID',dataIndex :'id', width:50},
+                    {title : '用户ID',dataIndex :'userId', width:100,visible:false},
+                    {title : '用户名',dataIndex :'userName', width:100},
+                    {title : '投注用户ID',dataIndex :'lotteryUserId', width:100,visible:false},
+                    {title : '投注用户名',dataIndex :'lotteryUserName', width:100,visible:false},
+                    {title : '任务ID',dataIndex :'taskId', width:100},
+                    {title : '投注内容',dataIndex :'bets', width:100,visible:false},
+                    {title : '实际投注内容',dataIndex :'betsContent', width:100},
+                    {title : '实际投注长度',dataIndex :'betsSize', width:100,visible:false},
+                    {title : '单注金额',dataIndex :'betMoney', width:100,visible:false},
+                    {title : '全部金额',dataIndex :'totalBetMoney', width:100,visible:false},
+                    {title : '投注码数量',dataIndex :'betCount', width:100,visible:false},
+                    {title : '期数',dataIndex :'periodNo', width:100},
+                    {title : '结果',dataIndex :'results', width:200},
+                    {title : '投注时间范围',dataIndex :'chipinTimeScope', width:100,visible:false},
+                    {title : '下次投注时间',dataIndex :'nextChipinTime', width:100},
+                    {title : '账户余额',dataIndex :'accountBalance', width:100,visible:false},
+                    {title : '执行规则名称',dataIndex :'executeRuleName', width:100},
+                    {title : '创建人',dataIndex : 'createUser',width:100},
+                    {title : '创建时间',dataIndex : 'createTime',width:100},
+                    {title : '操作',renderer : function(){
+                        return '<span class="grid-command btn-detail">详情</span>&nbsp;<span class="grid-command btn-delete">删除</span>'
+                    }}
+                ];
+            initButton();
+
+            //监听表格行内编辑点击操作
+            var editing = new Grid.Plugins.DialogEditing({
+                contentId : 'content', //设置隐藏的Dialog内容
+                triggerCls : 'btn-detail', //触发显示Dialog的样式
+                editor : {
+                    title : '权限对象-编辑',
+                    width : '80%',
+                    success:function(){
+
+                    }
+
+                },
+                autoSave : true //自动添加和更新
+            });
+            var store = new Store({
+                    url : myUrl.list,
+                    autoLoad:true,
+                    pageSize:10
+                }),
+                grid = new Grid.Grid({
+                    render:'#grid',
+                    loadMask: true,
+                    forceFit:true,
+                    columns : columns,
+                    store: store,
+                    plugins : [editing,Grid.Plugins.CheckSelection,Grid.Plugins.AutoFit,Grid.Plugins.ColumnResize], //勾选插件、自适应宽度插件
+                    // 底部工具栏
+
+                    // 顶部工具栏
+                    bbar : {
+                        //items 也可以在此配置
+                        // pagingBar:表明包含分页栏
+                        pagingBar:true
+                    }
+                });
+
+            grid.render();
+
+
+
+
+            //监听表格行内操作列的点击操作
+            grid.on('itemclick',function(ev){
+                var sender = $(ev.domTarget),
+                    itemEl = $(ev.element),
+                    item = ev.item;
+                if(sender.hasClass('btn-delete')){ //点击删除操作
+                    del(item);
+                }
+            });
+
+
+            //删除选中的记录
+            function del(item){
+                if(typeof(myUrl.rev)=="undefined"){
+                    BUI.Message.Alert('没有权限删除！','error');
+                    return;
+                }
+                BUI.Message.Confirm('确认删除ID['+item.id+']记录？',function(){
+                    $.ajax({
+                        type: "POST",
+                        url: myUrl.rev,
+                        data: {id:item.id},
+                        dataType: "json",
+                        success: function(data){
+                            if(data.code=="SUCCESS"){
+//                                store.remove(item);
+                                store.load();
+                            }
+                        }
+                    });
+                },'question');
+            }
+
+            //创建表单，表单中的日历，不需要单独初始化
+            var form = new BUI.Form.HForm({
+                srcNode : '#searchForm'
+            }).render();
+
+            form.on('beforesubmit',function(ev) {
+                //序列化成对象
+                var obj = form.serializeToObject();
+                obj.start = 0; //返回第一页
+                store.load(obj);
+                return false;
+            });
+
+            function initButton(){
+                for(var i = 0; i < myButton.length;i++) {
+                    var html = "<button type=\"button\" class=\"button " + myButton[i].cssName + "\" id=\"" + myButton[i].instruction + "\" url='" + myButton[i].url + "'>" + myButton[i].showName + "</button>&nbsp;&nbsp;";
+                    $("#searchDiv").append(html);
+                }
+            }
+            $('#indexRecycle').click(function(){
+                var url = $(this).attr("url");
+                if(typeof(url)=="undefined"){
+                    BUI.Message.Alert('没有权限！','error');
+                    return;
+                }
+                window.location.href=url;
+            });
+
+
+            //监听批量删除按钮
+            $("#batchRev").click(function(){
+                var url = $(this).attr("url");
+                if(typeof(url)=="undefined"){
+                    BUI.Message.Alert('没有权限删除！','error');
+                    return;
+                }
+                var ids = "";
+                var selections = grid.getSelection();
+                if(selections.length==0){
+                    BUI.Message.Alert('请选择要删除的信息！','warning');
+                    return false;
+                }
+                for(var i = 0; i< selections.length;i++){
+                    if(i<selections.length-1){
+                        ids+=selections[i].id+",";
+                    }else{
+                        ids+=selections[i].id;
+                    }
+                }
+                BUI.Message.Confirm('确认批量删除['+ids+']记录？',function(){
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: {ids:ids},
+                        dataType: "json",
+                        success: function(data){
+                            if(data.code=="SUCCESS"){
+//                                store.remove(selections);
+                                store.load();
+                            }
+                        }
+                    });
+                });
+                return false;
+            });
+
+        </script>
+        <!-- script end -->
+    </div>
+</body>
+</html>

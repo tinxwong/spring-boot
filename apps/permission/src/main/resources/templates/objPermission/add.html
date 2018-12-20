@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link href="/assets/css/dpl.css" rel="stylesheet">
+    <link href="/assets/css/bui.css" rel="stylesheet">
+    <script src="/assets/js/jquery-1.8.1.min.js"></script>
+    <script src="/assets/js/bui-min.js"></script>
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+
+
+    </style>
+</head>
+<form method="post" id="userForm">
+    <table class="table table-bordered table-hover definewidth m10">
+        <tr>
+            <td width="10%" class="tableleft">对象类型</td>
+            <td><select name="objType">
+                <option>----请选择----</option>
+                <option value="ROLE">ROLE</option>
+                <option value="PERSONAL">PERSONAL</option>
+            </select></td>
+        </tr>
+        <tr>
+            <td width="10%" class="tableleft">对象ID</td>
+            <td><input type="text" name="objId"/></td>
+        </tr>
+        <tr>
+            <td class="tableleft">应用名称</td>
+            <td><select type="text" id="appName" name="appName"></select></td>
+        </tr>
+        <tr>
+            <td class="tableleft">模块名称</td>
+            <td><select type="text" id="moduleName" name="moduleName">
+                <option value="">----请选择----</option>
+            </select></td>
+        </tr>
+        <tr>
+            <td width="10%" class="tableleft">链接</td>
+            <td><select type="text" id="url" name="url">
+                <option value="">----请选择----</option>
+            </select></td>
+        </tr>
+        <tr>
+            <td class="tableleft">标识</td>
+            <td><input type="text" id="instruction" name="instruction"/></td>
+        </tr>
+        <tr>
+            <td class="tableleft">链接类型</td>
+            <td><select id="urlType" name="urlType">
+                <option value="">----请选择----</option>
+                <option value="1">标签</option>
+                <option value="2">栏目</option>
+                <option value="3">按钮</option>
+                <option value="4">链接</option>
+            </select></td>
+        </tr>
+        <tr>
+            <td class="tableleft">显示名称</td>
+            <td><input type="text" name="showName"/></td>
+        </tr>
+        <tr>
+            <td class="tableleft">样式名称</td>
+            <td><input type="text" name="cssName"/></td>
+        </tr>
+        <tr>
+            <td class="tableleft"></td>
+            <td>
+                <button type="button" class="button button-primary" id="gosave">保存</button>&nbsp;&nbsp;<button type="button" class="button button-success" name="goback" id="goback">返回列表</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
+<script type="text/javascript" th:inline="javascript">
+    var myAppName = [[${appNames}]];
+    BUI.use('bui/overlay',function(overlay){
+
+        function show () {
+            BUI.Message.Show({
+                msg : '添加成功！',
+                icon : 'success',
+                buttons : [],
+                autoHide : true,
+                autoHideDelay : 1000
+            });
+        }
+
+
+        $('#goback').click(function(){
+            window.location.href="./index";
+        });
+        initAppNameOption();
+        $("#gosave").click(function(){
+            $.ajax({
+                type: "POST",
+                url: "./save",
+                data: $("#userForm").serialize(),
+                dataType: "json",
+                success: function(data){
+                    if(data.code=="SUCCESS"){
+                        show();
+                    }else{
+                        BUI.Message.Alert(data.msg,'error');
+                    }
+                }
+            });
+        });
+
+        $("#url").change(function(){
+            var url = $(this).val();
+            var arrUrl = url.split("/");
+//            $("#appName").val(arrUrl[1]);
+//            $("#moduleName").val(arrUrl[2]);
+            $("#instruction").val(arrUrl[3]);
+        });
+
+        $.ajax({
+            type: "GET",
+            url: "./getRoles",
+            dataType: "json",
+            success: function(data){
+
+                if(data.code=="SUCCESS"){
+                    var options = data.data;
+                    for(var i = 0; i < options.length;i++){
+                        var val = options[i];
+                        $("#roleDesc").append("<option roleid='"+val.roleId+"' rolename='"+val.roleName+"' value='"+val.roleDesc+"'>"+val.roleDesc+"</option>");
+                    }
+                }
+            }
+        });
+        $("#roleDesc").change(function(){
+            var obj = $("#roleDesc  option:selected");
+
+            $("#roleId").val($(obj).attr("roleid"));
+            $("#roleName").val($(obj).attr("rolename"));
+        });
+
+        function initAppNameOption(){
+            var optionHtml = "<option value=\"\">----请选择----</option>"
+            for(var i = 0; i < myAppName.length;i++) {
+                optionHtml +="<option value='"+myAppName[i]+"'>"+myAppName[i]+"</option>";
+            }
+            $("#appName").html(optionHtml);
+        }
+
+
+        $("#appName").change(function(){
+            var appName = $(this).val();
+            var moduleName = "";
+            $.ajax({
+                type: "POST",
+                url: "/common/modelmsg/loadByParam",
+                data: {"appName":appName,"moduleName":moduleName},
+                dataType: "json",
+                success: function(data){
+                    if(data.code=="SUCCESS"){
+                        var data = data.data;
+                        console.log("data:"+data);
+                        var modules = new Array();
+                        var optionHtml = "<option value=\"\">----请选择----</option>";
+                        optionHtml+="<option value='all'>all</option>";
+                        for(var i = 0; i < data.length; i++){
+                            optionHtml+="<option value='"+data[i].url+"'>"+data[i].url+"</option>";
+                            modules[i]=data[i].moduleName;
+                        }
+                        console.log("modules:"+modules);
+                        $("#url").html(optionHtml);
+                        initModuleNameOption(modules);
+                    }
+                }
+            });
+        });
+
+        $("#moduleName").change(function(){
+            var moduleName = $(this).val();
+            var appName = $("#appName").val();
+            $.ajax({
+                type: "POST",
+                url: "/common/modelmsg/loadByParam",
+                data: {"appName":appName,"moduleName":moduleName},
+                dataType: "json",
+                success: function(data){
+                    if(data.code=="SUCCESS"){
+                        var data = data.data;
+                        var modules = new Array();
+                        var optionHtml = "<option value=\"\">----请选择----</option>";
+                        optionHtml+="<option value='all'>all</option>";
+                        for(var i = 0; i < data.length; i++){
+                            optionHtml+="<option value='"+data[i].url+"'>"+data[i].url+"</option>";
+                            modules[i]=data[i].moduleName;
+                        }
+                        $("#url").html(optionHtml);
+                    }
+                }
+            });
+        });
+
+        function initModuleNameOption(modules){
+            var unique = new Array();
+            var optionHtml = "<option value=\"\">----请选择----</option>"
+            for(var i = 0; i < modules.length; i++){
+                if(!exist(unique,modules[i])){
+                    unique[unique.length] = modules[i];
+                    optionHtml+="<option value='"+modules[i]+"'>"+modules[i]+"</option>";
+                }
+            }
+            $("#moduleName").html(optionHtml);
+        }
+
+        function exist(unique,module){
+            var isExist = false;
+            for(var i = 0;i < unique.length; i++){
+                if(unique[i]==module){
+                    isExist=true;
+                    break;
+                }
+            }
+            return isExist;
+        }
+    });
+
+
+</script>
