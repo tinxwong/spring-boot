@@ -48,7 +48,7 @@ public class TimestampUtils {
         String clock = arrTime[0];
         String minute = arrTime[1];
         if(judgeCriticalValue()){
-            String startTime = String.format("%s 22:01:00",date);
+            String startTime = String.format("%s 22:02:00",date);
             String endTime = String.format("%s 22:04:00",date);
             map.put("start",startTime);
             map.put("end",endTime);
@@ -64,11 +64,11 @@ public class TimestampUtils {
             scope = (scope+1)*10;
             if(scope==60){
                 clock = ""+(Integer.parseInt(clock)+1);
-                startScope = "01";
-                endScope = "09";
+                startScope = "03";
+                endScope = "08";
             }else{
-                startScope = ""+(scope+1);
-                endScope = ""+(scope+9);
+                startScope = ""+(scope+3);
+                endScope = ""+(scope+8);
             }
 
         }
@@ -77,17 +77,17 @@ public class TimestampUtils {
             System.out.println("temp"+temp);
             if(temp>=60){
                 clock = ""+(Integer.parseInt(clock)+1);
-                startScope = "01";
+                startScope = "02";
                 endScope = "04";
             }else{
-                startScope = ""+(temp+1);
+                startScope = ""+(temp+2);
                 endScope = ""+(temp+4);
             }
 
         }
 
         minute = ""+startScope;
-        second = "30";
+        second = "00";
         String startTime = String.format("%s %s:%s:%s",date,clock,minute,second);
 
         minute = ""+endScope;
@@ -124,6 +124,21 @@ public class TimestampUtils {
         return false;
     }
 
+    public static boolean stopStage(long timestamp){
+        String date = currDate("yyyy-MM-dd");
+        String startTime = String.format("%s 02:00:00",date);
+        String endTime = String.format("%s 09:50:00",date);
+
+        long startTimestamp = getTimestamp(startTime);
+        long endTimestamp = getTimestamp(endTime);
+
+
+        if(timestamp>startTimestamp&&timestamp<endTimestamp){
+            System.out.println("在"+startTime+"和"+endTime+"时间段之间");
+            return true;
+        }
+        return false;
+    }
     /**
      * 10:00-22:00
      * @return

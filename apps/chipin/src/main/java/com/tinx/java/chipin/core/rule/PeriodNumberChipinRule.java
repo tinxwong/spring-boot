@@ -57,7 +57,7 @@ public class PeriodNumberChipinRule extends AbstractChipinRule {
 
     @Override
     public String getRuleName() {
-        return "periodNumberChipinRule";
+        return "PeriodNumberChipinRule";
     }
 
     public String getRuleDesc(){

@@ -58,7 +58,7 @@ public class MyApplicationListener implements ApplicationListener<ContextRefresh
                    i++;
 
                }
-               logger.info("��ʼ����ϣ�����ʼ��{}������",i);
+               logger.info("一共处理了{}条信息",i);
            }
        }).start();
     }

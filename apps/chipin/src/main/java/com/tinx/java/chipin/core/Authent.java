@@ -15,6 +15,8 @@ public interface Authent {
      * 模拟登陆
      */
     public CookieStore simulateLogin();
+
+    public CookieStore simulateLogin(String rooUrl,String loginUrl,String loginUser,String loginPwd);
     /**
      * 模拟同意
      */

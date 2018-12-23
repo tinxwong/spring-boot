@@ -46,7 +46,7 @@ public class AccountChangeChipinRule extends AbstractChipinRule {
 
     @Override
     public String getRuleName() {
-        return "accountChangeChipinRule";
+        return "AccountChangeChipinRule";
     }
 
     public String getRuleDesc(){

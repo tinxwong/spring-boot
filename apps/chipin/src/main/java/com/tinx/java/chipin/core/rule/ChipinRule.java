@@ -28,4 +28,10 @@ public interface ChipinRule extends Rule{
 
     public void init(Task task, Lottery lottery, UserLottery userLottery);
 
+    public void simulateAgreement();
+
+    public CookieStore getCookieStore();
+
+    public void setCookieStore(CookieStore cookieStore);
+
 }

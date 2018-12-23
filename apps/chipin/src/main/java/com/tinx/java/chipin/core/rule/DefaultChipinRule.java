@@ -44,12 +44,10 @@ import java.util.List;
  * @author tinx
  * @date 2018-10-7 17:48
  */
-@Component
 public class DefaultChipinRule extends AbstractChipinRule {
 
     private static Logger logger = LoggerFactory.getLogger(DefaultChipinRule.class);
 
-    private String rootUrl;
     @Autowired
     private ChipinLogService chipinLogService;
 
@@ -63,13 +61,7 @@ public class DefaultChipinRule extends AbstractChipinRule {
     public TaskService getTaskService(){
         return taskService;
     }
-    public String getRootUrl() {
-        return rootUrl;
-    }
 
-    public void setRootUrl(String rootUrl) {
-        this.rootUrl = rootUrl;
-    }
 
     public DefaultChipinRule(){}
 
@@ -103,7 +95,12 @@ public class DefaultChipinRule extends AbstractChipinRule {
             result = String.format("停止任务,accountMax=%s,accountMin=%s,balance=%s",accountMax,accountMin,balance);
             stopTask();
         }else{
-            result = simulateChipin(task,lottery);
+            try{
+                result = simulateChipin(task,lottery);
+            }catch (RuntimeException e){
+                logger.info("发生了Connection reset,尝试重新下注!");
+                result = simulateChipin(task,lottery);
+            }
 
         }
         ChipinLog chipinLog = new ChipinLog();
@@ -113,6 +110,7 @@ public class DefaultChipinRule extends AbstractChipinRule {
         chipinLog.setUserName(task.getUserName());
         chipinLog.setUserId(task.getUserId());
         chipinLog.setBetMoney(task.getMoney().toString());
+        chipinLog.setTotalBetMoney(task.getMoney().multiply(new BigDecimal(betsSize)).toString());
         chipinLog.setPeriodNo(periodNo);
         chipinLog.setResults(result);
         chipinLog.setExecuteRuleName(getRuleName());
@@ -125,7 +123,7 @@ public class DefaultChipinRule extends AbstractChipinRule {
     }
 
     public String getRuleName(){
-        return "defaultChipinRule";
+        return "DefaultChipinRule";
     }
 
     @Override

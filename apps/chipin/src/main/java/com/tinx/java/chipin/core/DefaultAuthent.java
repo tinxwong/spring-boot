@@ -85,6 +85,21 @@ public abstract class DefaultAuthent implements Authent{
         return cookieStore;
     }
 
+    /**
+     * 模拟登陆
+     */
+    public CookieStore simulateLogin(String rootUrl,String loginUrl,String loginUser,String loginPwd){
+        logger.info("Name=simulateLogin,Desc=模拟登陆,rooUrl={},loginUrl={},loginUser={},loginPwd={}",rootUrl,loginUrl,loginUser,loginPwd);
+        this.rootUrl = rootUrl;
+        long loginTime = System.currentTimeMillis();
+        String loginurl = String.format("%s%s%s", rootUrl,loginUrl,""+loginTime);
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair(LOGIN_USER_PARAM, loginUser));
+        params.add(new BasicNameValuePair(LOGIN_PWD_PARAM, loginPwd));
+        CookieStore cookieStore = doPost(loginurl,params);
+//        MapUtils.put(String.format("%s_%s_%s_COOKIE",lottery.getId(),userLottery.getLoginUser(),userLottery.getLoginPwd()),cookieStore);
+        return cookieStore;
+    }
 
 
     public CookieStore doPost(String postUrl,List<NameValuePair> parameterList) {
@@ -114,11 +129,17 @@ public abstract class DefaultAuthent implements Authent{
             System.out.println("retStr value:"+retStr);
             int status = JSONObject.fromObject(retStr).getInt("Status");
             if(status==1){
-                cookieStore = setCookieStore(closeableHttpResponse);
+                try{
+                    cookieStore = setCookieStore(closeableHttpResponse);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
             // 释放资源
             closeableHttpClient.close();
         } catch (Exception e) {
+            logger.error(e.getMessage());
         }
         return cookieStore;
     }
@@ -210,14 +231,15 @@ public abstract class DefaultAuthent implements Authent{
 
 
     public CookieStore initCookieStore(boolean need){
-        CookieStore cookieStore = (CookieStore)MapUtils.get(String.format("%s_%s_%s_COOKIE",lottery.getId(),userLottery.getLoginUser(),userLottery.getLoginPwd()));
-        if(need==true||cookieStore==null){
-            cookieStore = simulateLogin();
-            simulateAgreement();
-            return cookieStore;
-        }else {
-            return cookieStore;
-        }
+//        CookieStore cookieStore = (CookieStore)MapUtils.get(String.format("%s_%s_%s_COOKIE",lottery.getId(),userLottery.getLoginUser(),userLottery.getLoginPwd()));
+//        if(need==true||cookieStore==null){
+//            cookieStore = simulateLogin();
+//            simulateAgreement();
+//            return cookieStore;
+//        }else {
+//            return cookieStore;
+//        }
+        return simulateLogin();
     }
 
     public void changeTaskStatus(){

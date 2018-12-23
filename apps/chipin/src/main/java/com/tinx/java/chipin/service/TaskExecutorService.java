@@ -52,7 +52,7 @@ public class TaskExecutorService {
         if(task!=null){
             Lottery lottery = lotteryService.selectById(task.getLotteryId());
             UserLottery userLottery = userLotteryService.selectByParam(task.getUserId(),task.getLotteryId());
-            ChipinTaskJob chipinTaskJob = new ChipinTaskJob(task,lottery,userLottery);
+            ChipinTaskJob chipinTaskJob = new ChipinTaskJob(task);
             MapUtils.put("THREAD_"+id,chipinTaskJob);
             taskExecutor.submit(chipinTaskJob);
         }

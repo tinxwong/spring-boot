@@ -11,9 +11,11 @@ import com.tinx.java.chipin.service.TaskService;
 import com.tinx.java.chipin.service.UserLotteryService;
 import com.tinx.java.chipin.utils.MapUtils;
 import com.tinx.java.chipin.utils.RandomUtils;
+import com.tinx.java.common.utils.SpringContextUtils;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.RequestConfig;
@@ -25,6 +27,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +55,17 @@ public abstract class AbstractChipinRule implements ChipinRule {
 
     protected UserLottery userLottery;
 
+    protected CookieStore cookieStore;
+
+    public String rootUrl;
+
+    public CookieStore getCookieStore() {
+        return cookieStore;
+    }
+
+    public void setCookieStore(CookieStore cookieStore) {
+        this.cookieStore = cookieStore;
+    }
 
 
     public String getRootUrl() {
@@ -64,8 +78,6 @@ public abstract class AbstractChipinRule implements ChipinRule {
 
     public abstract TaskService getTaskService();
 
-
-    public String rootUrl;
 
 //    public CookieStore cookieStore;
 
@@ -93,7 +105,7 @@ public abstract class AbstractChipinRule implements ChipinRule {
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
         // HttpClient
         CloseableHttpClient closeableHttpClient = null;
-        CookieStore cookieStore = (CookieStore)MapUtils.get(String.format("%s_%s_%s_COOKIE",lottery.getId(),userLottery.getLoginUser(),userLottery.getLoginPwd()));
+        CookieStore cookieStore = getCookieStore();//(CookieStore)MapUtils.get(String.format("%s_%s_%s_COOKIE",lottery.getId(),userLottery.getLoginUser(),userLottery.getLoginPwd()));
         if(cookieStore!=null){
             closeableHttpClient = httpClientBuilder.setDefaultCookieStore(cookieStore).build();
         }else{
@@ -135,7 +147,8 @@ public abstract class AbstractChipinRule implements ChipinRule {
      * 上传下注文件，用来获取下注的参数格式
      * @return
      */
-    public String uploadBetNos(){
+    public String uploadBetNos(Task task,Lottery lottery){
+        logger.info("Name=uploadBetNos,Desc=上传下注文件,task={},lottery={}",task,lottery);
         String uploadBetNosUrl = lottery.getUploadBetNosUrl();
         String chipinFilePath = task.getChipinFilePath();
         logger.info("Name=uploadBetNos,Desc=上传下注文件,url={}",uploadBetNosUrl);
@@ -151,7 +164,7 @@ public abstract class AbstractChipinRule implements ChipinRule {
         httpPost.setConfig(requestConfig);
         MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
         File file = new File(chipinFilePath);
-        CookieStore cookieStore = (CookieStore)MapUtils.get(String.format("%s_%s_%s_COOKIE",lottery.getId(),userLottery.getLoginUser(),userLottery.getLoginPwd()));
+        CookieStore cookieStore = getCookieStore();//(CookieStore)MapUtils.get(String.format("%s_%s_%s_COOKIE",lottery.getId(),userLottery.getLoginUser(),userLottery.getLoginPwd()));
         if(cookieStore!=null){
             closeableHttpClient = httpClientBuilder.setDefaultCookieStore(cookieStore).build();
         }else{
@@ -168,6 +181,8 @@ public abstract class AbstractChipinRule implements ChipinRule {
             httpPost.setHeader("User-Agent","Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.109 Safari/537.36");
             httpPost.setHeader("Referer",rootUrl+"/App/Index?_="+System.currentTimeMillis());
             httpPost.setHeader("Host",rootUrl.replace("http://",""));
+            httpPost.setProtocolVersion(HttpVersion.HTTP_1_0);
+            httpPost.addHeader(HTTP.CONN_DIRECTIVE, HTTP.CONN_CLOSE);
             httpResponse = closeableHttpClient.execute(httpPost);
             HttpEntity responseEntity = httpResponse.getEntity();
             int statusCode= httpResponse.getStatusLine().getStatusCode();
@@ -193,8 +208,8 @@ public abstract class AbstractChipinRule implements ChipinRule {
 
     protected String getBetsContent(Task task,Lottery lottery){
         String content = "";
-        Task tempTask = getTaskService().selectById(task.getId());
-        String result = uploadBetNos();
+
+        String result = uploadBetNos(task,lottery);
         logger.info("上传下注文件结果:"+result);
         String jsonContent = result.split("</script>")[1];
         int status = JSONObject.fromObject(jsonContent).getInt("Status");
@@ -202,17 +217,18 @@ public abstract class AbstractChipinRule implements ChipinRule {
             throw new RuntimeException(result);
         }
         if(status==1){
-            content = generateBets(result,tempTask.getMoney());
+//            Task tempTask = getTaskService().selectById(task.getId());
+            content = generateBets(jsonContent,task.getMoney());
         }
 
         return content;
     }
 
-    protected String generateBets(String content, BigDecimal money){
-        if(StringUtils.isEmpty(content)){
+    protected String generateBets(String jsonContent, BigDecimal money){
+        if(StringUtils.isEmpty(jsonContent)){
             return null;
         }
-        String jsonContent = content.split("</script>")[1];
+//        String jsonContent = content.split("</script>")[1];
         System.out.println("jsonContent:"+jsonContent);
         JSONObject jsonObject = JSONObject.fromObject(jsonContent);
         String strJson = jsonObject.getJSONObject("Data").getString("Details");
@@ -232,19 +248,37 @@ public abstract class AbstractChipinRule implements ChipinRule {
         String result = "";
         String url = String.format("%s%s",getRootUrl(),lottery.getBatchBetUrl());
         logger.info("Name=simulateChipin,Desc=模拟下注,url={}",lottery.getBatchBetUrl());
-        String periodNo = getCurrentPeriodStatus();
+        String periodNo = "";
+        try{
+            periodNo = getCurrentPeriodStatus();
+        }catch (Exception e){
+            try {
+                Thread.sleep(1000);
+                periodNo = getCurrentPeriodStatus();
+            } catch (InterruptedException e1) {
+                logger.error(e1.getMessage());
+            }
+
+        }
         String guid = SecretGuid.getGuid();
         String rootUrl = getRootUrl();
         List<NameValuePair> params = new ArrayList<>();
-        String content = "";
         try{
-            content = getBetsContent(task,lottery);
+            if(StringUtils.isEmpty(betsContent)){
+                betsContent = getBetsContent(task,lottery);
+            }
         }catch(RuntimeException e){
-            return e.getMessage();
-        }
+            try{
+                betsContent = getBetsContent(task,lottery);
+            }catch (RuntimeException e1){
+                logger.error("获取下注内容失败："+e1.getMessage());
+                return e1.getMessage();
+            }
 
+        }
+        logger.info("下注内容："+betsContent);
         //params.add(new BasicNameValuePair("bets", "[{\"dict_no_type_id\":\"11\",\"bet_no\":\"1234\",\"bet_money\":\"1\"},{\"dict_no_type_id\":\"7\",\"bet_no\":\"123X\",\"bet_money\":\"1\"},{\"dict_no_type_id\":\"3\",\"bet_no\":\"4XX5\",\"bet_money\":\"1\"},{\"dict_no_type_id\":\"16\",\"bet_no\":\"5XXX5\",\"bet_money\":\"1\"},{\"dict_no_type_id\":\"15\",\"bet_no\":\"XXX12\",\"bet_money\":\"1\"},{\"dict_no_type_id\":\"18\",\"bet_no\":\"XX1X2\",\"bet_money\":\"1\"},{\"dict_no_type_id\":\"17\",\"bet_no\":\"X1XX2\",\"bet_money\":\"1\"},{\"dict_no_type_id\":\"2\",\"bet_no\":\"1X1X\",\"bet_money\":\"1\"},{\"dict_no_type_id\":\"1\",\"bet_no\":\"11XX\",\"bet_money\":\"1\"}]"));
-        params.add(new BasicNameValuePair("bets",content));
+        params.add(new BasicNameValuePair("bets",betsContent));
         params.add(new BasicNameValuePair("way", "103"));
         params.add(new BasicNameValuePair("guid", guid));
         params.add(new BasicNameValuePair("is_package", "0"));
@@ -257,7 +291,7 @@ public abstract class AbstractChipinRule implements ChipinRule {
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
         // HttpClient
         CloseableHttpClient closeableHttpClient = null;
-        CookieStore cookieStore = (CookieStore)MapUtils.get(String.format("%s_%s_%s_COOKIE",lottery.getId(),userLottery.getLoginUser(),userLottery.getLoginPwd()));
+        CookieStore cookieStore = getCookieStore();//(CookieStore)MapUtils.get(String.format("%s_%s_%s_COOKIE",lottery.getId(),userLottery.getLoginUser(),userLottery.getLoginPwd()));
         if(cookieStore!=null){
             closeableHttpClient = httpClientBuilder.setDefaultCookieStore(cookieStore).build();
         }else{
@@ -292,7 +326,7 @@ public abstract class AbstractChipinRule implements ChipinRule {
             int status = JSONObject.fromObject(retStr).getInt("Status");
             if (status == 1) {
                 result = "下注成功";
-
+                changeTaskStatus();
             }else{
                 result = "下注失败!"+retStr;
             }
@@ -313,7 +347,7 @@ public abstract class AbstractChipinRule implements ChipinRule {
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
         // HttpClient
         CloseableHttpClient closeableHttpClient = null;
-        CookieStore cookieStore = (CookieStore)MapUtils.get(String.format("%s_%s_%s_COOKIE",lottery.getId(),userLottery.getLoginUser(),userLottery.getLoginPwd()));
+        CookieStore cookieStore = getCookieStore();//(CookieStore)MapUtils.get(String.format("%s_%s_%s_COOKIE",lottery.getId(),userLottery.getLoginUser(),userLottery.getLoginPwd()));
         if(cookieStore!=null){
             closeableHttpClient = httpClientBuilder.setDefaultCookieStore(cookieStore).build();
         }else{
@@ -366,11 +400,68 @@ public abstract class AbstractChipinRule implements ChipinRule {
         return balance;
     }
 
+    /**
+     * 模拟同意网站协议
+     * @param
+     */
+    @Override
+    public void simulateAgreement() {
+        String url = String.format("%s%s%s",this.rootUrl,lottery.getAgreementUrl(),System.currentTimeMillis());
+        logger.info("Name=simulateAgreement,Desc=模拟同意网站协议,url={}",url);
+        // 创建HttpClientBuilder
+        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+        // HttpClient
+        CloseableHttpClient closeableHttpClient = null;
+//        CookieStore cookieStore = (CookieStore)MapUtils.get(String.format("%s_%s_%s_COOKIE",lottery.getId(),userLottery.getLoginUser(),userLottery.getLoginPwd()));
+        CookieStore cookieStore = getCookieStore();
+        if(cookieStore!=null){
+            closeableHttpClient = httpClientBuilder.setDefaultCookieStore(cookieStore).build();
+        }else{
+            throw new RuntimeException("cookieStore is null!");
+        }
+
+        HttpGet httpGet = new HttpGet(url);
+        httpGet.setHeader("Accept","application/json, text/javascript, */*; q=0.01");
+        httpGet.setHeader("Accept-Encoding","gzip, deflate");
+        httpGet.setHeader("Accept-Language","zh-CN,zh;q=0.8");
+        httpGet.setHeader("User-Agent","Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.109 Safari/537.36");
+        httpGet.setHeader("X-Requested-With","XMLHttpRequest");
+        httpGet.setHeader("Referer",rootUrl+"/Member/Agreement");
+        httpGet.setHeader("Host",rootUrl.replace("http://",""));
+        // 设置请求和传输超时时间
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setSocketTimeout(30000).setConnectTimeout(30000).build();
+        httpGet.setConfig(requestConfig);
+        try {
+            CloseableHttpResponse response = closeableHttpClient.execute(httpGet);
+//            setCookieStore(response);
+
+            HttpEntity httpEntity = response.getEntity();
+            String retStr = EntityUtils.toString(httpEntity, "UTF-8");
+            logger.info("name=simulateAgreement,desc=模拟同意网站协议,return value:"+retStr);
+            int status = JSONObject.fromObject(retStr).getInt("Status");
+
+            // 释放资源
+            closeableHttpClient.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void stopTask(){
         Task task1 = new Task();
         task1.setId(task.getId());
         task1.setStatus(TaskStatusEnum.STOP.getCode());
-        getTaskService().updateById(task1);
+        TaskService taskService = (TaskService) SpringContextUtils.getBean("taskServiceImpl");
+        taskService.updateById(task1);
+    }
+
+    public void changeTaskStatus(){
+        Task task1 = new Task();
+        task1.setId(task.getId());
+        task1.setStatus(TaskStatusEnum.RUNING.getCode());
+        TaskService taskService = (TaskService) SpringContextUtils.getBean("taskServiceImpl");
+        taskService.updateById(task1);
     }
 }
