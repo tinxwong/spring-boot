@@ -152,7 +152,7 @@ public abstract class DefaultAuthent implements Authent{
         for (Header h : headers) {
             String name = h.getName();
             String value = h.getValue();
-            System.out.println("header : " + h.getName() + ":" + h.getValue());
+            logger.info("header : " + h.getName() + ":" + h.getValue());
             if ("Set-Cookie".equalsIgnoreCase(name)) {
                 String[] strs = value.split(";");
                 for (String str : strs) {

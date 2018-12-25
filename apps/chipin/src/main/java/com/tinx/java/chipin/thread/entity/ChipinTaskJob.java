@@ -1,6 +1,7 @@
 package com.tinx.java.chipin.thread.entity;
 
 import com.baomidou.mybatisplus.mapper.Condition;
+import com.tinx.java.chipin.common.Constraint;
 import com.tinx.java.chipin.core.Authent;
 import com.tinx.java.chipin.core.rule.ChipinRule;
 import com.tinx.java.chipin.entity.*;
@@ -83,17 +84,26 @@ public class ChipinTaskJob implements Callable{
         try{
             Authent authent = (Authent) SpringContextUtils.getBean(lottery.getAuthentClassName());
             CookieStore cookieStore = authent.simulateLogin(rootUrl,lottery.getLoginUrl(),userLottery.getLoginUser(),userLottery.getLoginPwd());
-            String ruleName = task.getRuleName();
-            Class clazz = Class.forName(String.format("com.tinx.java.chipin.core.rule.%s",ruleName));
-            ChipinRule chipinRule = (ChipinRule)clazz.newInstance();
-            chipinRule.init(task,lottery,userLottery);
-            chipinRule.setCookieStore(cookieStore);
-            chipinRule.setRootUrl(rootUrl);
-            chipinRule.simulateAgreement();
-
+            ChipinRule chipinRule = null;
+            try{
+                String ruleName = task.getRuleName();
+                Class clazz = Class.forName(String.format("%s.%s", Constraint.RULE_PACKAGE,ruleName));
+                chipinRule = (ChipinRule)clazz.newInstance();
+                chipinRule.init(task,lottery,userLottery);
+                chipinRule.setCookieStore(cookieStore);
+                chipinRule.setRootUrl(rootUrl);
+                chipinRule.simulateAgreement();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            if(chipinRule==null){
+                logger.error("chipinRule is null!");
+                return null;
+            }
+            ChipinLog chipinLog = new ChipinLog();
             while(isSignal()) {
-
-                ChipinLog chipinLog = chipinRule.execute(authent);
+                chipinLog.setId(null);
+                chipinLog = chipinRule.execute(authent);
                 Task tempTask = taskService.selectById(task.getId());
                 if(tempTask.getStatus().intValue()==TaskStatusEnum.STOP.getCode()){
                     setSignal(false);
